@@ -14,7 +14,7 @@ export interface ProductCardData {
   name_en?: string;
   description_ar?: string;
   price: number;
-  price_tax?: number;
+  price_tax: number;
   image?: string;
   stock_status: "instock" | "outofstock" | "lowstock";
 }
@@ -26,7 +26,10 @@ interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
-  ({ className, product, onAddToCart, showAddButton = true, ...props }, ref) => {
+  (
+    { className, product, onAddToCart, showAddButton = true, ...props },
+    ref
+  ) => {
     const router = useRouter();
     const isInStock = product.stock_status === "instock";
     const displayName = product.name_ar || product.name_en || product.name;
@@ -84,11 +87,12 @@ export const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
           <div className="flex items-center justify-between mt-auto pt-3 border-t border-border">
             <div>
               <p className="text-2xl font-bold text-primary">
-                {product.price.toFixed(2)} ج.م
+                {product.price_tax.toFixed(2)} ج.م
               </p>
               {product.price_tax && product.price_tax > product.price && (
                 <p className="text-xs text-muted-foreground line-through">
-                  {product.price_tax.toFixed(2)} ج.م
+                  {(product.price_tax * 1.1).toFixed(2)}
+                  ج.م
                 </p>
               )}
             </div>
@@ -109,4 +113,3 @@ export const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
   }
 );
 ProductCard.displayName = "ProductCard";
-
