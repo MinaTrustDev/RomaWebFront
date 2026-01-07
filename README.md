@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Roma Pizza - Online Ordering Platform
 
-## Getting Started
+A modern, scalable pizza ordering platform built with Next.js 16 and Clean Architecture principles.
 
-First, run the development server:
+## 🏗️ Architecture
+
+This project follows **Clean Architecture** with clear separation of concerns:
+
+- **Domain Layer**: Business entities, DTOs, and constants
+- **Application Layer**: Use cases and business logic
+- **Infrastructure Layer**: External services and data access
+- **Presentation Layer**: UI components and pages
+
+📖 **For detailed architecture documentation, see [ARCHITECTURE.md](./ARCHITECTURE.md)**
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+ or Bun
+- npm, yarn, pnpm, or bun
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
+
+```bash
+npm install
+# or
+bun install
+```
+
+3. Create `.env.local` file (see `.env.example`):
+
+```env
+NEXT_PUBLIC_API_BASE_URL=https://roma2go.com/wp-json
+API_BASE_URL=https://roma2go.com/wp-json
+API_AUTH_USERNAME=AppRoma
+API_AUTH_PASSWORD=your-password
+NEXT_PUBLIC_IMAGE_DOMAIN=roma2go.com
+NEXT_PUBLIC_SITE_URL=https://roma2go.com
+```
+
+4. Run the development server:
 
 ```bash
 npm run dev
 # or
-yarn dev
-# or
-pnpm dev
-# or
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📁 Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+RomaPizza/
+├── app/                    # Next.js app router pages
+├── domain/                 # Business logic & entities
+│   ├── entities/          # Domain entities
+│   ├── dtos/             # Data Transfer Objects
+│   └── constants/        # Business constants
+├── application/          # Use cases & business rules
+│   ├── interfaces/       # Repository contracts
+│   └── use-cases/       # Business use cases
+├── infrastructure/       # External services
+│   ├── repositories/    # Data access implementations
+│   └── factories/      # Dependency injection
+├── presentation/        # UI layer
+│   ├── actions/        # Server actions
+│   ├── home/          # Home page components
+│   ├── product/       # Product page components
+│   └── store/        # State management
+└── components/        # Reusable UI components
+```
 
-## Learn More
+## 🎯 Features
 
-To learn more about Next.js, take a look at the following resources:
+- ✅ Clean Architecture implementation
+- ✅ Server-side rendering with Next.js
+- ✅ Optimized caching strategies
+- ✅ SEO optimized (metadata, structured data, sitemap)
+- ✅ RTL support (Arabic)
+- ✅ Responsive design
+- ✅ Type-safe with TypeScript
+- ✅ Image optimization
+- ✅ Performance optimized
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠️ Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Framework**: Next.js 16.1.1
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **State Management**: Zustand
+- **UI Components**: Radix UI, Shadcn UI
+- **HTTP Client**: Axios
+- **Maps**: Google Maps API
+- **Carousel**: Embla Carousel
 
-## Deploy on Vercel
+## 📚 Documentation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- [Architecture Documentation](./ARCHITECTURE.md) - Complete architecture guide
+- [Architecture Graphs](./docs/ARCHITECTURE_GRAPH.md) - Visual flow diagrams
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🏃 Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+
+## 🔒 Environment Variables
+
+See `.env.example` for required environment variables.
+
+## 📝 License
+
+Private project - All rights reserved
