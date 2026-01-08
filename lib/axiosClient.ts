@@ -41,4 +41,34 @@ export const axiosClient: AxiosInstance = axios.create({
     "Content-Type": "application/json",
     Authorization: `Basic ${basicAuth}`,
   },
+  // Add request interceptor for better error handling
+  validateStatus: (status) => {
+    // Don't throw for 4xx and 5xx, handle them in catch blocks
+    return status >= 200 && status < 600;
+  },
 });
+
+// Add response interceptor for error handling
+axiosClient.interceptors.response.use(
+  (response) => {
+    // Only return successful responses (2xx)
+    if (response.status >= 200 && response.status < 300) {
+      return response;
+    }
+    // For non-2xx responses, throw an error
+    const error = new Error(
+      `Request failed with status ${response.status}: ${response.statusText}`
+    );
+    (error as any).response = response;
+    throw error;
+  },
+  (error: AxiosError) => {
+    // Handle network errors and other axios errors
+    if (error.code === "ECONNABORTED") {
+      error.message = "Request timeout - the server took too long to respond";
+    } else if (error.code === "ENOTFOUND" || error.code === "ECONNREFUSED") {
+      error.message = "Network error - could not connect to server";
+    }
+    return Promise.reject(error);
+  }
+);

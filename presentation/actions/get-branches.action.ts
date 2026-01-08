@@ -13,9 +13,26 @@ export const getBranches = async (orderType: string) => {
         const result = await useCases.getBranches.execute(orderType);
         console.log("getBranches action result:", result?.length || 0, "branches");
         return result;
-      } catch (error) {
+      } catch (error: any) {
         console.error("getBranches action error:", error);
-        throw error;
+        
+        // Handle AggregateError
+        if (error instanceof AggregateError) {
+          const firstError = error.errors?.[0] || error;
+          const errorMessage = firstError.message || "Failed to fetch branches";
+          console.error("AggregateError details:", error.errors);
+          throw new Error(errorMessage);
+        }
+        
+        // Handle regular errors
+        if (error instanceof Error) {
+          throw error;
+        }
+        
+        // Handle unknown error types
+        throw new Error(
+          typeof error === "string" ? error : "Failed to fetch branches"
+        );
       }
     },
     [`branches-${orderType}`],

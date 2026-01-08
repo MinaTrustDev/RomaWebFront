@@ -2,6 +2,7 @@ import { MethodSelectionPage } from "@/presentation/home/components/method-selec
 import { BranchItems } from "@/presentation/home/components/branchItems";
 import { MethodHeader } from "@/presentation/home/components/method-header";
 import { OrderFlowManager } from "@/presentation/home/components/order-flow-manager";
+import { DeliveryMethodInitializer } from "@/presentation/home/components/delivery-method-initializer";
 import { cookies } from "next/headers";
 import type { Metadata } from "next";
 import { SEO_CONSTANTS } from "@/domain/constants/seo.constant";
@@ -24,7 +25,8 @@ export default async function Home() {
   const branchId = cookieStore.get("branch_id")?.value || null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
+    <div className="min-h-screen bg-linear-to-b from-background via-background to-muted/20">
+      <DeliveryMethodInitializer />
       <MethodHeader />
       <OrderFlowManager>
         <div />

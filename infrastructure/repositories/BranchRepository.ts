@@ -65,16 +65,41 @@ export class BranchRepository implements IBranchRepository {
       return branches;
     } catch (error: any) {
       console.error("Error fetching branches:", error);
+      
+      // Handle AggregateError (multiple errors)
+      if (error instanceof AggregateError) {
+        console.error("AggregateError detected with", error.errors?.length || 0, "errors");
+        error.errors?.forEach((err: any, index: number) => {
+          console.error(`Error ${index + 1}:`, err);
+        });
+        // Extract the first meaningful error
+        const firstError = error.errors?.[0] || error;
+        if (firstError.response) {
+          console.error("Response status:", firstError.response.status);
+          console.error("Response data:", JSON.stringify(firstError.response.data, null, 2));
+        }
+        throw new Error(
+          `Failed to fetch branches: ${firstError.message || "Network error"}`
+        );
+      }
+      
+      // Handle axios errors
       if (error.response) {
         console.error("Response status:", error.response.status);
         console.error("Response headers:", error.response.headers);
         console.error("Response data:", JSON.stringify(error.response.data, null, 2));
+        throw new Error(
+          `API Error (${error.response.status}): ${
+            error.response.data?.message || error.response.data?.error || "Failed to fetch branches"
+          }`
+        );
       } else if (error.request) {
         console.error("Request made but no response:", error.request);
+        throw new Error("Network error: No response from server");
       } else {
         console.error("Error setting up request:", error.message);
+        throw new Error(`Request error: ${error.message || "Unknown error"}`);
       }
-      throw error;
     }
   }
 

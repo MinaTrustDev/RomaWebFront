@@ -16,34 +16,6 @@ export const BranchItems = async ({ branchId }: { branchId: string }) => {
     return null;
   }
 
-  // CategoryDTO already matches what we need, just ensure products match ProductData type
-  const categoriesData: CategoryDTO[] = branchData.categories.map(
-    (category: CategoryDTO) => ({
-      id: category.id,
-      name_ar: category.name_ar,
-      name_en: category.name_en,
-      image: category.image,
-      products: category.products.map((product: ProductDTO) => ({
-        id: product.id,
-        name: product.name,
-        name_en: product.name_en,
-        name_ar: product.name_ar,
-        slug: product.slug,
-        description: product.description,
-        description_en: product.description_en,
-        description_ar: product.description_ar,
-        price: product.price,
-        price_tax: product.price_tax,
-        image: product.image,
-        offer_menu_image: product.offer_menu_image,
-        stock_status: product.stock_status,
-        points: product.points,
-        variants: product.variants,
-        related_products: product.related_products,
-      })) as ProductData[],
-    })
-  );
-
   return (
     <>
       <StructuredData branch={branchData} type="Restaurant" />
@@ -81,7 +53,7 @@ export const BranchItems = async ({ branchId }: { branchId: string }) => {
         </div>
 
         <div className="space-y-16">
-          {categoriesData.map((category) => (
+          {branchData.categories.map((category) => (
             <ProductSlider
               key={category.id}
               title={category.name_ar || category.name_en}

@@ -32,9 +32,7 @@ export const OrderFlowManager = ({
   } | null>(null);
   const [mapDialogOpen, setMapDialogOpen] = useState(false);
   const [branches, setBranches] = useState<BranchDTO[]>([]);
-  const [selectedBranch, setSelectedBranch] = useState<BranchDTO | null>(
-    null
-  );
+  const [selectedBranch, setSelectedBranch] = useState<BranchDTO | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { deliveryMethod, setDeliveryMethod, setSelectedBranchId } =
@@ -71,7 +69,8 @@ export const OrderFlowManager = ({
           console.log("Number of branches:", data?.length || 0);
           setBranches(data || []);
         } catch (err) {
-          const errorMessage = err instanceof Error ? err.message : "Failed to fetch branches";
+          const errorMessage =
+            err instanceof Error ? err.message : "Failed to fetch branches";
           setError(errorMessage);
           console.error("Error fetching branches:", err);
           setBranches([]);
@@ -87,7 +86,7 @@ export const OrderFlowManager = ({
   useEffect(() => {
     // Use deliveryMethod from store as fallback if selectedMethod is null
     const method = selectedMethod || deliveryMethod;
-    
+
     console.log("Nearby branches useEffect triggered:", {
       selectedMethod,
       deliveryMethod,
@@ -95,9 +94,13 @@ export const OrderFlowManager = ({
       deliveryLocation,
       deliveryStep,
       branchDialogOpen,
-      condition: method === "delivery" && deliveryLocation && deliveryStep === "branch" && branchDialogOpen
+      condition:
+        method === "delivery" &&
+        deliveryLocation &&
+        deliveryStep === "branch" &&
+        branchDialogOpen,
     });
-    
+
     if (
       method === "delivery" &&
       deliveryLocation &&
@@ -110,7 +113,11 @@ export const OrderFlowManager = ({
           setLoading(true);
           setError(null);
           setBranches([]); // Clear previous branches
-          console.log("Calling getNearbyBranches with:", deliveryLocation.latitude, deliveryLocation.longitude);
+          console.log(
+            "Calling getNearbyBranches with:",
+            deliveryLocation.latitude,
+            deliveryLocation.longitude
+          );
           const data = await getNearbyBranches(
             deliveryLocation.latitude,
             deliveryLocation.longitude
@@ -139,11 +146,17 @@ export const OrderFlowManager = ({
     } else {
       console.log("Nearby branches fetch skipped - conditions not met");
     }
-  }, [selectedMethod, deliveryMethod, deliveryLocation, deliveryStep, branchDialogOpen]);
+  }, [
+    selectedMethod,
+    deliveryMethod,
+    deliveryLocation,
+    deliveryStep,
+    branchDialogOpen,
+  ]);
 
   const handleMethodContinue = () => {
     if (selectedMethod) {
-      setDeliveryMethod(selectedMethod);
+      setDeliveryMethod(selectedMethod); // This will also save to cookie
       setMethodDialogOpen(false);
       if (selectedMethod === "delivery") {
         setDeliveryStep("location");
@@ -158,23 +171,23 @@ export const OrderFlowManager = ({
     console.log("handleLocationSelect called with:", { latitude, longitude });
     console.log("Current selectedMethod:", selectedMethod);
     console.log("Current deliveryMethod:", deliveryMethod);
-    
+
     // Ensure selectedMethod is set to delivery BEFORE setting other state
     // This ensures the useEffect will see the correct selectedMethod value
     const methodToUse = selectedMethod || deliveryMethod || "delivery";
     setSelectedMethod(methodToUse);
-    
+
     setDeliveryLocation({ latitude, longitude });
     setDeliveryStep("branch");
     setMapDialogOpen(false);
-    
+
     // Use a small timeout to ensure state updates are processed before opening dialog
     // This ensures the useEffect sees the correct state values
     setTimeout(() => {
       setBranchDialogOpen(true);
       console.log("Branch dialog opened with selectedMethod:", methodToUse);
     }, 0);
-    
+
     console.log("After setting state - will trigger nearby branches fetch");
   };
 
@@ -184,6 +197,13 @@ export const OrderFlowManager = ({
       document.cookie = `branch_id=${selectedBranch.id}; path=/; max-age=${
         60 * 60 * 24 * 30
       }`;
+      // Ensure delivery method is saved to cookie before refresh
+      const methodToSave = selectedMethod || deliveryMethod;
+      if (methodToSave) {
+        document.cookie = `delivery_method=${methodToSave}; path=/; max-age=${
+          60 * 60 * 24 * 30
+        }`;
+      }
       setBranchDialogOpen(false);
       setSelectedMethod(null);
       setDeliveryStep("location");
@@ -212,7 +232,10 @@ export const OrderFlowManager = ({
     } else {
       // When dialog opens, ensure we trigger a fresh fetch by resetting state
       // The useEffect will handle the fetch
-      console.log("Branch dialog opened, will fetch branches for:", selectedMethod);
+      console.log(
+        "Branch dialog opened, will fetch branches for:",
+        selectedMethod
+      );
     }
   };
 

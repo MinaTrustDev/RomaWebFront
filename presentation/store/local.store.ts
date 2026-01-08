@@ -17,6 +17,12 @@ export const useLocalStore = createStore<LocalStore>(
     deliveryMethod: null,
     setDeliveryMethod: (deliveryMethod) => {
       set({ deliveryMethod });
+      // Also store in cookie for server-side access
+      if (typeof window !== "undefined") {
+        document.cookie = `delivery_method=${deliveryMethod}; path=/; max-age=${
+          60 * 60 * 24 * 30
+        }`; // 30 days
+      }
     },
     selectedBranchId: null,
     setSelectedBranchId: (branchId) => {
