@@ -112,7 +112,56 @@ RomaPizza/
 
 ## 🔒 Environment Variables
 
-See `.env.example` for required environment variables.
+See [ENV_VARIABLES.md](./ENV_VARIABLES.md) for detailed information about all required environment variables.
+
+## 🚀 Deployment to Vercel
+
+### Prerequisites
+
+- A Vercel account ([sign up here](https://vercel.com))
+- Your project pushed to GitHub, GitLab, or Bitbucket
+
+### Deployment Steps
+
+1. **Push your code to a Git repository** (GitHub, GitLab, or Bitbucket)
+
+2. **Import your project to Vercel**:
+
+   - Go to [Vercel Dashboard](https://vercel.com/dashboard)
+   - Click "Add New" → "Project"
+   - Import your Git repository
+   - Vercel will auto-detect Next.js framework
+
+3. **Configure Environment Variables**:
+
+   - In your Vercel project settings, go to **Settings** → **Environment Variables**
+   - Add the following variables (see [ENV_VARIABLES.md](./ENV_VARIABLES.md) for details):
+     - `API_AUTH_USERNAME` - Your API username
+     - `API_AUTH_PASSWORD` - Your API password
+     - `NEXT_PUBLIC_IMAGE_DOMAIN` - Your image domain (optional, defaults to roma2go.com)
+     - `NEXT_PUBLIC_SITE_URL` - Your site URL (optional, defaults to https://roma2go.com)
+     - `API_BASE_URL` - API base URL (optional)
+     - `NEXT_PUBLIC_API_BASE_URL` - Public API base URL (optional)
+
+4. **Deploy**:
+   - Click "Deploy"
+   - Vercel will automatically build and deploy your application
+   - Your site will be live at `https://your-project.vercel.app`
+
+### Build Configuration
+
+The project includes `vercel.json` with optimal settings:
+
+- Build command: `npm run build`
+- Framework: Next.js
+- Node.js version: Auto-detected
+
+### Post-Deployment
+
+- Verify your environment variables are set correctly
+- Check the build logs for any errors
+- Test the deployment URL
+- Configure custom domain (optional) in Vercel project settings
 
 ## 📝 License
 

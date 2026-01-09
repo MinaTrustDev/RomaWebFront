@@ -1,0 +1,43 @@
+# Development files
+node_modules/
+.next/
+out/
+.env*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+debug.log
+
+# Testing
+coverage/
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+dist/
+build/
+
+# Lock files (optional - Vercel will install dependencies)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+# bun.lock
+
