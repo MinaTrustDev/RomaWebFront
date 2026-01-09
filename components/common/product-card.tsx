@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export interface ProductCardData {
@@ -23,11 +23,12 @@ interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
   product: ProductCardData;
   onAddToCart?: (productId: string) => void;
   showAddButton?: boolean;
+  aspectRatio?: "square" | "wide";
 }
 
 export const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
   (
-    { className, product, onAddToCart, showAddButton = true, ...props },
+    { className, product, onAddToCart, showAddButton = true, aspectRatio = "square", ...props },
     ref
   ) => {
     const router = useRouter();
@@ -35,7 +36,6 @@ export const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
     const displayName = product.name_ar || product.name_en || product.name;
 
     const handleCardClick = (e: React.MouseEvent) => {
-      // Don't navigate if clicking the add to cart button
       if ((e.target as HTMLElement).closest("button")) {
         return;
       }
@@ -47,63 +47,86 @@ export const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
         ref={ref}
         onClick={handleCardClick}
         className={cn(
-          "group overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-lg hover:border-primary/50 cursor-pointer",
+          "group overflow-hidden h-full flex flex-col transition-all duration-500 ease-out hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1 border-transparent bg-card/50 backdrop-blur-sm hover:bg-card rounded-[2rem]",
           className
         )}
         {...props}
       >
-        <div className="relative w-full aspect-square bg-gradient-to-br from-muted to-muted/50 overflow-hidden">
+        {/* Image Container */}
+        <div className={cn(
+          "relative w-full overflow-hidden rounded-[2rem] m-2 mb-0",
+          aspectRatio === "wide" ? "aspect-[4/3]" : "aspect-square"
+        )}>
           {product.image ? (
             <Image
               src={product.image}
               alt={displayName}
               fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              className={cn(
+                "object-cover transition-transform duration-700 ease-in-out group-hover:scale-110",
+                !isInStock && "grayscale"
+              )}
               sizes="(max-width: 768px) 85vw, (max-width: 1024px) 45vw, 30vw"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+            <div className="w-full h-full flex items-center justify-center text-muted-foreground/30 bg-muted/20">
               <span className="text-sm">لا توجد صورة</span>
             </div>
           )}
+
+          {/* Status Badge */}
           {!isInStock && (
             <Badge
               variant="destructive"
-              className="absolute top-2 right-2 shadow-sm"
+              className="absolute top-4 right-4 shadow-lg backdrop-blur-md bg-destructive/90 px-3 py-1 text-sm font-medium"
             >
               غير متوفر
             </Badge>
           )}
+
+          {/* Slight gradient overlay for depth */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </div>
-        <CardContent className="p-4 flex flex-col flex-1">
-          <h4 className="font-semibold text-lg mb-2 line-clamp-2 text-foreground group-hover:text-primary transition-colors">
-            {displayName}
-          </h4>
-          {product.description_ar && (
-            <p className="text-sm text-muted-foreground mb-4 line-clamp-2 flex-1">
-              {product.description_ar}
-            </p>
-          )}
-          <div className="flex items-center justify-between mt-auto pt-3 border-t border-border">
-            <div>
-              <p className="text-2xl font-bold text-primary">
-                {product.price_tax.toFixed(2)} ج.م
+
+        {/* Content */}
+        <CardContent className="p-6 flex flex-col flex-1 relative gap-3">
+          <div className="space-y-2">
+            <h4 className="font-bold text-xl leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-1">
+              {displayName}
+            </h4>
+
+            {product.description_ar && (
+              <p className="text-base text-muted-foreground/70 line-clamp-2 leading-relaxed min-h-[3rem]">
+                {product.description_ar}
               </p>
+            )}
+          </div>
+
+          <div className="mt-auto pt-2 flex items-center justify-between gap-4">
+            <div className="flex flex-col">
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-black text-primary tracking-tight">
+                  {product.price_tax.toFixed(0)}
+                </span>
+                <span className="text-sm font-medium text-muted-foreground">ج.م</span>
+              </div>
               {product.price_tax && product.price_tax > product.price && (
-                <p className="text-xs text-muted-foreground line-through">
-                  {(product.price_tax * 1.1).toFixed(2)}
-                  ج.م
-                </p>
+                <span className="text-sm text-muted-foreground/50 line-through decoration-primary/30">
+                  {Math.round(product.price_tax * 1.1)}
+                </span>
               )}
             </div>
+
             {isInStock && showAddButton && (
               <Button
-                size="sm"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow-md transition-all"
-                onClick={() => onAddToCart?.(product.id)}
+                size="icon"
+                className="h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:bg-primary hover:scale-110 active:scale-95 transition-all duration-300"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onAddToCart?.(product.id);
+                }}
               >
-                <ShoppingCart className="h-4 w-4 mr-1" />
-                أضف
+                <Plus className="h-6 w-6 stroke-[2.5]" />
               </Button>
             )}
           </div>

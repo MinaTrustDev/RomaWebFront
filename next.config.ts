@@ -25,6 +25,52 @@ const nextConfig: NextConfig = {
       "embla-carousel-react",
     ],
   },
+  webpack(config: any) {
+    // Find all rules that handle SVG files
+    const rules = config.module?.rules;
+    
+    if (rules) {
+      // Find and modify existing SVG rules
+      rules.forEach((rule: any) => {
+        if (
+          rule &&
+          typeof rule === "object" &&
+          rule.test &&
+          typeof rule.test.test === "function" &&
+          rule.test.test(".svg")
+        ) {
+          rule.exclude = /\.svg$/i;
+        }
+      });
+
+      // Add new SVG rules at the beginning - order matters: more specific first
+      // Handle SVG imports with ?url - return the file URL
+      rules.unshift({
+        test: /\.svg$/i,
+        resourceQuery: /\?url$/,
+        type: "asset/resource",
+        generator: {
+          filename: "static/media/[name].[hash][ext]",
+        },
+      });
+      
+      // Handle regular SVG imports - convert to React component
+      rules.unshift({
+        test: /\.svg$/i,
+        resourceQuery: { not: [/\?url$/] },
+        use: [
+          {
+            loader: "@svgr/webpack",
+            options: {
+              svgo: false,
+            },
+          },
+        ],
+      });
+    }
+
+    return config;
+  },
 };
 
 export default nextConfig;

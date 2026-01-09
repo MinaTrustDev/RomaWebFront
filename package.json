@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev --webpack",
     "build": "next build",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "lint": "eslint"
@@ -32,6 +32,7 @@
     "zustand": "^5.0.9"
   },
   "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

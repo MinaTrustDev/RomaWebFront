@@ -15,12 +15,14 @@ interface ProductSliderProps {
   products: ProductData[];
   title: string;
   onAddToCart?: (productId: string) => void;
+  aspectRatio?: "square" | "wide";
 }
 
 export const ProductSlider = ({
   products,
   title,
   onAddToCart,
+  aspectRatio = "square",
 }: ProductSliderProps) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
@@ -88,8 +90,8 @@ export const ProductSlider = ({
   return (
     <section className="w-full">
       <SectionHeader title={title} action={navigationButtons} />
-      <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex gap-4">
+      <div className="overflow-hidden px-4 md:px-0 -mx-4 md:mx-0 py-8 -my-8" ref={emblaRef}>
+        <div className="flex gap-6 md:gap-8">
           {products.map((product) => {
             const productCardData: ProductCardData = {
               id: product.id,
@@ -105,11 +107,12 @@ export const ProductSlider = ({
             return (
               <div
                 key={product.id}
-                className="flex-[0_0_85%] md:flex-[0_0_45%] lg:flex-[0_0_30%] min-w-0"
+                className="flex-[0_0_85%] md:flex-[0_0_45%] lg:flex-[0_0_32%] min-w-0 pl-1"
               >
                 <ProductCard
                   product={productCardData}
                   onAddToCart={onAddToCart}
+                  aspectRatio={aspectRatio}
                 />
               </div>
             );

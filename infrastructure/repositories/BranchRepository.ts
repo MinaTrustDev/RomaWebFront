@@ -104,9 +104,15 @@ export class BranchRepository implements IBranchRepository {
   }
 
   async getBranchById(branchId: string): Promise<BranchEntity | null> {
+    // Validate branchId before making API call
+    if (!branchId || typeof branchId !== "string" || branchId.trim() === "") {
+      console.warn("getBranchById called with invalid branchId:", branchId);
+      return null;
+    }
+
     try {
       const response = await axiosClient.get(
-        `/stora/v1/branch-items?branch_id=${branchId}`
+        `/stora/v1/branch-items?branch_id=${branchId.trim()}`
       );
       const data = response.data;
 

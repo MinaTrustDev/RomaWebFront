@@ -6,7 +6,10 @@ export class GetNearbyBranchesUseCase {
   constructor(private branchRepository: IBranchRepository) {}
 
   async execute(latitude: string, longitude: string): Promise<BranchDTO[]> {
-    const branches = await this.branchRepository.getNearbyBranches(latitude, longitude);
+    const branches = await this.branchRepository.getNearbyBranches(
+      latitude,
+      longitude
+    );
     // Convert BranchEntity instances to DTOs for server-to-client serialization
     return branches.map((branch) => this.toBranchDTO(branch));
   }
@@ -34,4 +37,3 @@ export class GetNearbyBranchesUseCase {
     };
   }
 }
-
