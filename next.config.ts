@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 86400, // 24 hours
+    minimumCacheTTL: 0,
   },
   compress: true,
   poweredByHeader: false,
@@ -27,10 +27,25 @@ const nextConfig: NextConfig = {
   },
   // Empty turbopack config to silence error - webpack is used when webpack() function is present
   turbopack: {},
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store, no-cache, must-revalidate, max-age=0",
+          },
+          { key: "Pragma", value: "no-cache" },
+          { key: "Expires", value: "0" },
+        ],
+      },
+    ];
+  },
   webpack(config: any) {
     // Find all rules that handle SVG files
     const rules = config.module?.rules;
-    
+
     if (rules) {
       // Find and modify existing SVG rules
       rules.forEach((rule: any) => {
@@ -55,7 +70,7 @@ const nextConfig: NextConfig = {
           filename: "static/media/[name].[hash][ext]",
         },
       });
-      
+
       // Handle regular SVG imports - convert to React component
       rules.unshift({
         test: /\.svg$/i,

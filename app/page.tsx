@@ -17,8 +17,8 @@ export const metadata: Metadata = {
 };
 
 // Enable static generation with revalidation
-export const revalidate = 3600; // Revalidate every hour
-export const dynamic = "force-dynamic"; // Allow dynamic content based on cookies
+export const revalidate = 1; // Revalidate every hour
+// export const dynamic = "force-dynamic"; // Allow dynamic content based on cookies
 
 export default async function Home() {
   const cookieStore = await cookies();

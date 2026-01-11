@@ -88,14 +88,18 @@ export const BranchItems = async ({ branchId }: { branchId: string }) => {
 
       {/* Categories Sections */}
       <div className="flex flex-col w-full space-y-8 md:space-y-12 pb-24">
-        <OffersSlider
-          products={
-            sortedCategories.find((category) =>
-              category.name_ar.includes("عروض")
-            )?.products || []
-          }
-          title="عروض"
-        />
+        <section className="w-full relative overflow-visible">
+          <div className="w-full max-w-7xl mx-auto px-4 relative z-10">
+            <OffersSlider
+              products={
+                sortedCategories.find((category) =>
+                  category.name_ar.includes("عروض")
+                )?.products || []
+              }
+              title=""
+            />
+          </div>
+        </section>
         {sortedCategories.slice(1).map((category) => (
           <section
             key={category.id}
@@ -103,7 +107,7 @@ export const BranchItems = async ({ branchId }: { branchId: string }) => {
           >
             <div className="w-full max-w-7xl mx-auto px-4 relative z-10">
               <ProductSlider
-                title={category.name_ar || category.name_en}
+                title={category.name_en}
                 products={category.products}
                 aspectRatio={"square"}
               />

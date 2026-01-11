@@ -59,8 +59,8 @@ export async function generateMetadata({
 }
 
 // Enable ISR with revalidation
-export const revalidate = 3600; // Revalidate every hour
-export const dynamicParams = true;
+export const revalidate = 1; // Revalidate every hour
+export const dynamicParams = false;
 
 export default async function ProductDetailPage({
   params,

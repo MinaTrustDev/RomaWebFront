@@ -40,6 +40,9 @@ export const axiosClient: AxiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
     Authorization: `Basic ${basicAuth}`,
+    // Prevent HTTP response caching from intermediaries and browsers
+    "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+    Pragma: "no-cache",
   },
   // Add request interceptor for better error handling
   validateStatus: (status) => {
