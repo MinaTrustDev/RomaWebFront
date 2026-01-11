@@ -6,6 +6,7 @@ import { BranchDTO } from "@/domain/dtos/branch.dto";
 import { StructuredData } from "./structured-data";
 import { BranchHeader } from "./branch-header";
 import { cn } from "@/lib/utils";
+import OffersSlider from "./OffersSlider";
 
 export const BranchItems = async ({ branchId }: { branchId: string }) => {
   const branchData = (await getBranchItems(branchId)) as BranchDTO | null;
@@ -16,8 +17,10 @@ export const BranchItems = async ({ branchId }: { branchId: string }) => {
 
   // Sort categories: "Offers" (عروض) first, then others
   const sortedCategories = [...branchData.categories].sort((a, b) => {
-    const isOfferA = a.name_ar?.includes("عروض") || a.name_en?.toLowerCase().includes("offer");
-    const isOfferB = b.name_ar?.includes("عروض") || b.name_en?.toLowerCase().includes("offer");
+    const isOfferA =
+      a.name_ar?.includes("عروض") || a.name_en?.toLowerCase().includes("offer");
+    const isOfferB =
+      b.name_ar?.includes("عروض") || b.name_en?.toLowerCase().includes("offer");
 
     if (isOfferA && !isOfferB) return -1;
     if (!isOfferA && isOfferB) return 1;
@@ -66,12 +69,18 @@ export const BranchItems = async ({ branchId }: { branchId: string }) => {
                 {branchData.ordering_status === "open" && (
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
                 )}
-                <span className={cn(
-                  "relative inline-flex rounded-full h-2 w-2",
-                  branchData.ordering_status === "open" ? "bg-green-500" : "bg-red-500"
-                )}></span>
+                <span
+                  className={cn(
+                    "relative inline-flex rounded-full h-2 w-2",
+                    branchData.ordering_status === "open"
+                      ? "bg-green-500"
+                      : "bg-red-500"
+                  )}
+                ></span>
               </span>
-              {branchData.ordering_status === "open" ? "مفتوح للطلب" : "مغلق حالياً"}
+              {branchData.ordering_status === "open"
+                ? "مفتوح للطلب"
+                : "مغلق حالياً"}
             </Badge>
           </div>
         </div>
@@ -79,7 +88,15 @@ export const BranchItems = async ({ branchId }: { branchId: string }) => {
 
       {/* Categories Sections */}
       <div className="flex flex-col w-full space-y-8 md:space-y-12 pb-24">
-        {sortedCategories.map((category) => (
+        <OffersSlider
+          products={
+            sortedCategories.find((category) =>
+              category.name_ar.includes("عروض")
+            )?.products || []
+          }
+          title="عروض"
+        />
+        {sortedCategories.slice(1).map((category) => (
           <section
             key={category.id}
             className="w-full relative overflow-visible"
@@ -88,11 +105,7 @@ export const BranchItems = async ({ branchId }: { branchId: string }) => {
               <ProductSlider
                 title={category.name_ar || category.name_en}
                 products={category.products}
-                aspectRatio={
-                  (category.name_ar?.includes("عروض") || category.name_en?.toLowerCase().includes("offer"))
-                    ? "wide"
-                    : "square"
-                }
+                aspectRatio={"square"}
               />
             </div>
           </section>

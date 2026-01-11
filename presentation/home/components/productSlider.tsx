@@ -90,7 +90,10 @@ export const ProductSlider = ({
   return (
     <section className="w-full">
       <SectionHeader title={title} action={navigationButtons} />
-      <div className="overflow-hidden px-4 md:px-0 -mx-4 md:mx-0 py-8 -my-8" ref={emblaRef}>
+      <div
+        className="overflow-hidden px-4 md:px-0 -mx-4 md:mx-0 py-8 -my-8"
+        ref={emblaRef}
+      >
         <div className="flex gap-6 md:gap-8">
           {products.map((product) => {
             const productCardData: ProductCardData = {

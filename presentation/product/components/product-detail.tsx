@@ -102,7 +102,9 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
             {/* Variants - Placed Under the Image */}
             {product.variants.length > 0 && (
               <div className="space-y-4">
-                <h3 className="text-2xl font-bold text-foreground px-2">خيارات المنتج</h3>
+                <h3 className="text-2xl font-bold text-foreground px-2">
+                  خيارات المنتج
+                </h3>
                 <VariantSelector
                   variants={product.variants}
                   selectedVariant={selectedVariant}
@@ -114,15 +116,21 @@ export const ProductDetail = ({ product }: ProductDetailProps) => {
 
           {/* RIGHT COLUMN: Info & Actions */}
           <div className="lg:col-span-5 flex flex-col space-y-8 md:space-y-10 sticky top-8">
-            <ProductHeader name={displayName} description={displayDescription} />
+            <ProductHeader
+              name={displayName}
+              description={displayDescription}
+            />
 
             <div className="space-y-8 bg-card/30 p-8 rounded-[2rem] border border-primary/5 shadow-2xl shadow-primary/5">
-              <PriceDisplay price={displayPrice} priceTax={displayPriceTax} />
+              <PriceDisplay
+                price={displayPriceTax}
+                priceTax={displayPriceTax}
+              />
 
               <AddToCart
                 onAddToCart={handleAddToCart}
                 disabled={displayStockStatus !== "instock"}
-                price={displayPrice}
+                price={displayPriceTax}
                 points={product.points}
               />
             </div>
