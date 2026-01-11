@@ -25,6 +25,8 @@ const nextConfig: NextConfig = {
       "embla-carousel-react",
     ],
   },
+  // Empty turbopack config to silence error - webpack is used when webpack() function is present
+  turbopack: {},
   webpack(config: any) {
     // Find all rules that handle SVG files
     const rules = config.module?.rules;

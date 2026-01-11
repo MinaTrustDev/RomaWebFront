@@ -15,7 +15,7 @@ import { LoadingState } from "@/components/common/loading-state";
 import { MapPin, Navigation } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyB7nwjtRFP8BJQHwgrCeczDH-tNzwS4QaU";
+const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY as string;
 const libraries: ("places" | "drawing" | "geometry")[] = ["places"];
 
 const defaultCenter = {
@@ -102,7 +102,10 @@ export const MapSelector = ({
 
   const handleConfirm = () => {
     if (selectedLocation) {
-      console.log("MapSelector handleConfirm - selectedLocation:", selectedLocation);
+      console.log(
+        "MapSelector handleConfirm - selectedLocation:",
+        selectedLocation
+      );
       onLocationSelect(selectedLocation);
       onOpenChange(false);
     } else {
@@ -206,10 +209,7 @@ export const MapSelector = ({
         </div>
 
         <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => handleOpenChange(false)}
-          >
+          <Button variant="outline" onClick={() => handleOpenChange(false)}>
             إلغاء
           </Button>
           <Button
@@ -224,4 +224,3 @@ export const MapSelector = ({
     </Dialog>
   );
 };
-
