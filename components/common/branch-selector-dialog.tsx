@@ -13,7 +13,7 @@ import { LoadingState } from "@/components/common/loading-state";
 import { EmptyState } from "@/components/common/empty-state";
 import { BranchList } from "@/components/common/branch-list";
 import { AlertCircle } from "lucide-react";
-import { BranchDTO } from "@/domain/dtos/branch.dto";
+import { BranchDTO } from "@/core/domain/dtos/branch.dto";
 
 interface BranchSelectorDialogProps {
   open: boolean;
@@ -95,4 +95,3 @@ export const BranchSelectorDialog = ({
     </Dialog>
   );
 };
-

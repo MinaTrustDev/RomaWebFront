@@ -1,9 +1,9 @@
-import { getProductDetails } from "@/presentation/actions/get-product-details.action";
-import { ProductDetail } from "@/presentation/product/components/product-detail";
-import { ProductStructuredData } from "@/presentation/product/components/product-structured-data";
+import { getProductDetails } from "@/core/presentation/actions/get-product-details.action";
+import { ProductDetail } from "@/core/presentation/product/components/product-detail";
+import { ProductStructuredData } from "@/core/presentation/product/components/product-structured-data";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { SEO_CONSTANTS } from "@/domain/constants/seo.constant";
+import { SEO_CONSTANTS } from "@/core/domain/constants/seo.constant";
 
 // Generate metadata for product pages
 export async function generateMetadata({
@@ -58,10 +58,6 @@ export async function generateMetadata({
   };
 }
 
-// Enable ISR with revalidation
-export const revalidate = 1; // Revalidate every hour
-export const dynamicParams = false;
-
 export default async function ProductDetailPage({
   params,
 }: {
@@ -82,8 +78,8 @@ export default async function ProductDetailPage({
   }
   return (
     <>
-      <ProductStructuredData product={product} />
-      <ProductDetail product={product} />
+      <ProductStructuredData product={JSON.parse(JSON.stringify(product))} />
+      <ProductDetail product={JSON.parse(JSON.stringify(product))} />
     </>
   );
 }

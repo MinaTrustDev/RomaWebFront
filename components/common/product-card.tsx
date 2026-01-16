@@ -28,7 +28,14 @@ interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
   (
-    { className, product, onAddToCart, showAddButton = true, aspectRatio = "square", ...props },
+    {
+      className,
+      product,
+      onAddToCart,
+      showAddButton = true,
+      aspectRatio = "square",
+      ...props
+    },
     ref
   ) => {
     const router = useRouter();
@@ -53,10 +60,12 @@ export const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
         {...props}
       >
         {/* Image Container */}
-        <div className={cn(
-          "relative w-full overflow-hidden rounded-[2rem] m-2 mb-0",
-          aspectRatio === "wide" ? "aspect-[4/3]" : "aspect-square"
-        )}>
+        <div
+          className={cn(
+            "relative w-full overflow-hidden rounded-[2rem] m-2 mb-0",
+            aspectRatio === "wide" ? "aspect-4/3" : "aspect-square"
+          )}
+        >
           {product.image ? (
             <Image
               src={product.image}
@@ -66,7 +75,7 @@ export const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
                 "object-cover transition-transform duration-700 ease-in-out group-hover:scale-110",
                 !isInStock && "grayscale"
               )}
-              sizes="(max-width: 768px) 85vw, (max-width: 1024px) 45vw, 30vw"
+              // sizes="(max-width: 768px) 25vw, (max-width: 1024px) 25vw, 25vw"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-muted-foreground/30 bg-muted/20">
@@ -96,7 +105,7 @@ export const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
             </h4>
 
             {product.description_ar && (
-              <p className="text-base text-muted-foreground/70 line-clamp-2 leading-relaxed min-h-[3rem]">
+              <p className="text-base text-muted-foreground/70 line-clamp-2 leading-relaxed min-h-12">
                 {product.description_ar}
               </p>
             )}
@@ -108,7 +117,9 @@ export const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
                 <span className="text-2xl font-black text-primary tracking-tight">
                   {product.price_tax.toFixed(0)}
                 </span>
-                <span className="text-sm font-medium text-muted-foreground">ج.م</span>
+                <span className="text-sm font-medium text-muted-foreground">
+                  ج.م
+                </span>
               </div>
               {product.price_tax && product.price_tax > product.price && (
                 <span className="text-sm text-muted-foreground/50 line-through decoration-primary/30">

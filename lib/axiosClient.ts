@@ -21,7 +21,7 @@ if (!AUTH_USERNAME || !AUTH_PASSWORD) {
 }
 
 // Create Basic Auth header (works in both Node.js and browser)
-const createBasicAuth = (username: string, password: string): string => {
+export const createBasicAuth = (username: string, password: string): string => {
   if (typeof Buffer !== "undefined") {
     // Node.js environment
     return Buffer.from(`${username}:${password}`).toString("base64");

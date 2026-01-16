@@ -1,7 +1,7 @@
 "use client";
 
-import { BranchItem } from "@/presentation/home/components/methods/select-branch/branchItem";
-import { BranchDTO } from "@/domain/dtos/branch.dto";
+import { BranchItem } from "@/core/presentation/home/components/methods/select-branch/branchItem";
+import { BranchDTO } from "@/core/domain/dtos/branch.dto";
 
 interface BranchListProps {
   branches: BranchDTO[];
@@ -27,4 +27,3 @@ export const BranchList = ({
     </div>
   );
 };
-

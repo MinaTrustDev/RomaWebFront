@@ -12,6 +12,7 @@ const Card = React.forwardRef<
       className
     )}
     {...props}
+    dir="rtl"
   />
 ));
 Card.displayName = "Card";
@@ -75,5 +76,11 @@ const CardFooter = React.forwardRef<
 ));
 CardFooter.displayName = "CardFooter";
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent };
-
+export {
+  Card,
+  CardHeader,
+  CardFooter,
+  CardTitle,
+  CardDescription,
+  CardContent,
+};

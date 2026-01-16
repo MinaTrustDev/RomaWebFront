@@ -1,5 +1,5 @@
 import { MetadataRoute } from "next";
-import { SEO_CONSTANTS } from "@/domain/constants/seo.constant";
+import { SEO_CONSTANTS } from "@/core/domain/constants/seo.constant";
 
 export default function robots(): MetadataRoute.Robots {
   return {

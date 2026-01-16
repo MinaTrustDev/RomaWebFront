@@ -1,11 +1,11 @@
-import { MethodSelectionPage } from "@/presentation/home/components/method-selection-page";
-import { BranchItems } from "@/presentation/home/components/branchItems";
-import { MethodHeader } from "@/presentation/home/components/method-header";
-import { OrderFlowManager } from "@/presentation/home/components/order-flow-manager";
-import { DeliveryMethodInitializer } from "@/presentation/home/components/delivery-method-initializer";
-import { cookies } from "next/headers";
+import { PageProducts } from "@/core/presentation/home/components/PageProducts";
+import { MethodHeader } from "@/core/presentation/home/components/method-header";
 import type { Metadata } from "next";
-import { SEO_CONSTANTS } from "@/domain/constants/seo.constant";
+import { SEO_CONSTANTS } from "@/core/domain/constants/seo.constant";
+import { getAllProductsUseCase } from "@/core/di";
+import drawsBg from "@/public/draws.svg";
+import { BranchHeader } from "@/core/presentation/home/components/branch-header";
+import { BranchInfoHeader } from "@/core/presentation/home/components/BranchInfoHeader";
 
 export const metadata: Metadata = {
   title: "الرئيسية",
@@ -16,28 +16,34 @@ export const metadata: Metadata = {
   },
 };
 
-// Enable static generation with revalidation
-export const revalidate = 1; // Revalidate every hour
-// export const dynamic = "force-dynamic"; // Allow dynamic content based on cookies
-
 export default async function Home() {
-  const cookieStore = await cookies();
-  const branchId = cookieStore.get("branch_id")?.value || null;
+  const branch = await getAllProductsUseCase.execute();
 
   return (
     <div className="min-h-screen bg-linear-to-b from-background via-background to-muted/20">
-      <DeliveryMethodInitializer />
-      <MethodHeader />
-      <OrderFlowManager>
-        <div />
-      </OrderFlowManager>
-      {!branchId ? (
-        <MethodSelectionPage />
-      ) : (
-        <div className="w-full">
-          <BranchItems branchId={branchId} />
-        </div>
+      <div className="relative w-full  bg-primary/5 pb-4">
+        <div
+          className="absolute inset-0 w-full h-full bg-primary"
+          style={{
+            backgroundImage: `url(${drawsBg})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            borderBottomLeftRadius: "50% 20%",
+            borderBottomRightRadius: "50% 20%",
+          }}
+        />
+
+        <MethodHeader />
+      </div>
+
+      {branch.id !== undefined && (
+        <>
+          <BranchInfoHeader branchData={JSON.parse(JSON.stringify(branch))} />
+        </>
       )}
+
+      <PageProducts branch={JSON.parse(JSON.stringify(branch))} />
     </div>
   );
 }

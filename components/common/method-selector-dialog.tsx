@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { DELIVERY_METHODS } from "@/domain/constants/delivery-methods.constant";
+import { DELIVERY_METHODS } from "@/core/domain/constants/delivery-methods.constant";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
@@ -101,4 +101,3 @@ export const MethodSelectorDialog = ({
     </Dialog>
   );
 };
-
