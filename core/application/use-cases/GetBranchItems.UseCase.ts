@@ -4,7 +4,7 @@ import { IBranchRepository } from "../interfaces/IBranchRepository.interface";
 export class GetBranchItemsUseCase {
   constructor(private readonly branchRepository: IBranchRepository) {}
 
-  async execute(branchId: string): Promise<BranchEntity> {
+  async execute(branchId: number): Promise<BranchEntity> {
     return this.branchRepository.getBranchById(branchId);
   }
 }

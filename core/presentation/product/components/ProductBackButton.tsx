@@ -1,7 +1,8 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React from "react";
 
 export const ProductBackButton = () => {
   const router = useRouter();

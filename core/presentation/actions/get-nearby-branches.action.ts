@@ -1,29 +1,38 @@
 "use server";
 
-import { useCases } from "@/core/infrastructure/factories/UseCaseFactory";
+import { GetNearbyBranchesUseCase } from "@/core/application/use-cases/GetNearbyBranchesUseCase";
+import { getNearbyBranchesUseCase } from "@/core/di";
+import { z } from "zod";
+import { createServerAction } from "zsa";
 
-// Caching disabled: always fetch fresh nearby branches
+
 export const getNearbyBranches = async (
-  latitude: string,
-  longitude: string
+  {latitude, longitude}:{latitude: number,
+  longitude: number}
 ) => {
   try {
-    console.log("getNearbyBranches action called with:", {
-      latitude,
-      longitude,
-    });
-    const result = await useCases.getNearbyBranches.execute(
+    const result = await getNearbyBranchesUseCase.execute(
       latitude,
       longitude
     );
-    console.log(
-      "getNearbyBranches action result:",
-      result?.length || 0,
-      "branches"
-    );
-    return result;
+    return JSON.parse(JSON.stringify(result));
   } catch (error) {
     console.error("getNearbyBranches action error:", error);
     throw error;
   }
 };
+
+export const getNearbyBranchesAction = createServerAction()
+  .input(
+    z.object({
+      latitude: z.number(),
+      longitude: z.number(),
+    })
+  )
+  .handler(async ({ input }: { input: { latitude: number, longitude: number } }) => {
+    const result = await getNearbyBranchesUseCase.execute(
+      input.latitude,
+      input.longitude
+    );
+    return JSON.parse(JSON.stringify(result));
+  });

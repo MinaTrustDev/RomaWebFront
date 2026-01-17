@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useJsApiLoader, GoogleMap, Marker } from "@react-google-maps/api";
 import {
   Dialog,
@@ -15,22 +15,25 @@ import { LoadingState } from "@/components/common/loading-state";
 import { MapPin, Navigation } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY as string;
+// Use NEXT_PUBLIC_ prefix for client-side access
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
 const libraries: ("places" | "drawing" | "geometry")[] = ["places"];
 
 const defaultCenter = {
-  lat: 30.0444, // Cairo coordinates
+  lat: 30.0444,
   lng: 31.2357,
 };
 
 export interface Location {
   lat: number;
   lng: number;
+  address?: string;
+  formattedAddress?: string;
+  city?: string;
+  country?: string;
 }
 
 interface MapSelectorProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
   onLocationSelect: (location: Location) => void;
   defaultLocation?: Location;
   title?: string;
@@ -40,8 +43,6 @@ interface MapSelectorProps {
 }
 
 export const MapSelector = ({
-  open,
-  onOpenChange,
   onLocationSelect,
   defaultLocation,
   title = "حدد موقع التوصيل",
@@ -53,7 +54,9 @@ export const MapSelector = ({
     defaultLocation || null
   );
   const [isDetecting, setIsDetecting] = useState(false);
+  const [isGeocoding, setIsGeocoding] = useState(false);
   const mapRef = useRef<google.maps.Map | null>(null);
+  const geocoderRef = useRef<google.maps.Geocoder | null>(null);
 
   const { isLoaded, loadError } = useJsApiLoader({
     id: "google-map-script",
@@ -61,15 +64,83 @@ export const MapSelector = ({
     libraries,
   });
 
-  const handleMapClick = useCallback((e: google.maps.MapMouseEvent) => {
-    if (e.latLng) {
-      const location = {
-        lat: e.latLng.lat(),
-        lng: e.latLng.lng(),
-      };
-      setSelectedLocation(location);
+  // Initialize geocoder when map is loaded
+  useEffect(() => {
+    if (isLoaded && window.google) {
+      geocoderRef.current = new window.google.maps.Geocoder();
     }
-  }, []);
+  }, [isLoaded]);
+
+  const geocodeLocation = useCallback(
+    async (lat: number, lng: number): Promise<Location> => {
+      if (!geocoderRef.current) {
+        return { lat, lng };
+      }
+
+      setIsGeocoding(true);
+      try {
+        const response = await geocoderRef.current.geocode({
+          location: { lat, lng },
+        });
+
+        if (response.results && response.results.length > 0) {
+          const result = response.results[0];
+          const addressComponents = result.address_components;
+
+          let city = "";
+          let country = "";
+          let streetNumber = "";
+          let route = "";
+
+          addressComponents?.forEach((component) => {
+            const types = component.types;
+            if (types.includes("locality") || types.includes("administrative_area_level_2")) {
+              city = component.long_name;
+            }
+            if (types.includes("country")) {
+              country = component.long_name;
+            }
+            if (types.includes("street_number")) {
+              streetNumber = component.long_name;
+            }
+            if (types.includes("route")) {
+              route = component.long_name;
+            }
+          });
+
+          const address = [streetNumber, route].filter(Boolean).join(" ").trim();
+
+          return {
+            lat,
+            lng,
+            address: address || undefined,
+            formattedAddress: result.formatted_address,
+            city: city || undefined,
+            country: country || undefined,
+          };
+        }
+      } catch (error) {
+        console.error("Geocoding error:", error);
+      } finally {
+        setIsGeocoding(false);
+      }
+
+      return { lat, lng };
+    },
+    []
+  );
+
+  const handleMapClick = useCallback(
+    async (e: google.maps.MapMouseEvent) => {
+      if (e.latLng && isLoaded) {
+        const lat = e.latLng.lat();
+        const lng = e.latLng.lng();
+        const locationWithDetails = await geocodeLocation(lat, lng);
+        setSelectedLocation(locationWithDetails);
+      }
+    },
+    [isLoaded, geocodeLocation]
+  );
 
   const detectCurrentLocation = () => {
     if (!navigator.geolocation) {
@@ -79,15 +150,14 @@ export const MapSelector = ({
 
     setIsDetecting(true);
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const location = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        };
-        setSelectedLocation(location);
+      async (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const locationWithDetails = await geocodeLocation(lat, lng);
+        setSelectedLocation(locationWithDetails);
 
         if (mapRef.current) {
-          mapRef.current.setCenter(location);
+          mapRef.current.setCenter({ lat, lng });
           mapRef.current.setZoom(15);
         }
         setIsDetecting(false);
@@ -107,33 +177,30 @@ export const MapSelector = ({
         selectedLocation
       );
       onLocationSelect(selectedLocation);
-      onOpenChange(false);
     } else {
       console.warn("MapSelector handleConfirm - no location selected");
     }
   };
 
-  const handleOpenChange = (newOpen: boolean) => {
-    if (!newOpen) {
-      setSelectedLocation(defaultLocation || null);
-    }
-    onOpenChange(newOpen);
-  };
-
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className={cn("max-w-4xl max-h-[90vh]", className)}>
-        <DialogHeader>
-          <DialogTitle className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-            {title}
-          </DialogTitle>
-          <DialogDescription className="text-base text-muted-foreground mt-2">
-            {description}
-          </DialogDescription>
-        </DialogHeader>
+    <div className="space-y-4">
+      {loadError && (
+        <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+          <p className="text-sm text-destructive">
+            حدث خطأ أثناء تحميل الخريطة. يرجى المحاولة مرة أخرى.
+          </p>
+        </div>
+      )}
 
-        <div className="space-y-4">
-          <div className="flex gap-2">
+      {!isLoaded && !loadError && (
+        <div className="min-h-[400px] flex items-center justify-center">
+          <LoadingState text="جاري تحميل الخريطة..." />
+        </div>
+      )}
+
+      {isLoaded && (
+        <>
+          <div className="flex gap-2 mb-4">
             <Button
               variant="outline"
               onClick={detectCurrentLocation}
@@ -145,82 +212,107 @@ export const MapSelector = ({
             </Button>
           </div>
 
-          {loadError && (
-            <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
-              <p className="text-sm text-destructive">
-                حدث خطأ أثناء تحميل الخريطة. يرجى المحاولة مرة أخرى.
-              </p>
+          <div className="rounded-lg overflow-hidden border-2 border-border min-h-[400px] relative">
+            <GoogleMap
+              mapContainerStyle={{
+                width: "100%",
+                height: "100%",
+                minHeight: "400px",
+              }}
+              center={selectedLocation || defaultCenter}
+              zoom={selectedLocation ? 15 : 12}
+              onClick={handleMapClick}
+              onDragEnd={async () => {
+                if (mapRef.current) {
+                  const center = mapRef.current.getCenter();
+                  if (center) {
+                    const lat = center.lat();
+                    const lng = center.lng();
+                    const locationWithDetails = await geocodeLocation(lat, lng);
+                    setSelectedLocation(locationWithDetails);
+                  }
+                }
+              }}
+              onZoomChanged={async () => {
+                if (mapRef.current) {
+                  const center = mapRef.current.getCenter();
+                  if (center) {
+                    const lat = center.lat();
+                    const lng = center.lng();
+                    const locationWithDetails = await geocodeLocation(lat, lng);
+                    setSelectedLocation(locationWithDetails);
+                  }
+                }
+              }}
+              onLoad={(map) => {
+                mapRef.current = map;
+                // Initial geocode when map loads
+                if (map && (!selectedLocation || selectedLocation.lat === defaultCenter.lat)) {
+                  const center = map.getCenter();
+                  if (center) {
+                    geocodeLocation(center.lat(), center.lng()).then(setSelectedLocation);
+                  }
+                }
+              }}
+              options={{
+                zoomControl: true,
+                streetViewControl: false,
+                mapTypeControl: false,
+                fullscreenControl: true,
+              }}
+            >
+            </GoogleMap>
+            {/* Fixed center marker */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <MapPin className="h-10 w-10 text-primary drop-shadow-lg" strokeWidth={2} />
             </div>
-          )}
+          </div>
 
-          {!isLoaded && !loadError && (
-            <div className="min-h-[400px] flex items-center justify-center">
-              <LoadingState text="جاري تحميل الخريطة..." />
-            </div>
-          )}
-
-          {isLoaded && (
-            <div className="rounded-lg overflow-hidden border-2 border-border min-h-[400px]">
-              <GoogleMap
-                mapContainerStyle={{
-                  width: "100%",
-                  height: "100%",
-                  minHeight: "400px",
-                }}
-                center={selectedLocation || defaultCenter}
-                zoom={selectedLocation ? 15 : 12}
-                onClick={handleMapClick}
-                onLoad={(map) => {
-                  mapRef.current = map;
-                }}
-                options={{
-                  zoomControl: true,
-                  streetViewControl: false,
-                  mapTypeControl: false,
-                  fullscreenControl: true,
-                }}
-              >
-                {selectedLocation && (
-                  <Marker
-                    position={selectedLocation}
-                    icon={{
-                      url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
-                    }}
-                  />
-                )}
-              </GoogleMap>
-            </div>
-          )}
+          <Button
+            disabled={!selectedLocation || isGeocoding}
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+            onClick={handleConfirm}
+          >
+            {confirmLabel || "تأكيد الموقع"}
+          </Button>
 
           {selectedLocation && (
-            <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-primary" />
-              <div className="flex-1">
-                <p className="text-sm font-medium text-foreground">
+            <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg flex items-start gap-2">
+              <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-foreground mb-1">
                   الموقع المحدد
                 </p>
-                <p className="text-xs text-muted-foreground">
-                  خط العرض: {selectedLocation.lat.toFixed(6)}, خط الطول:{" "}
-                  {selectedLocation.lng.toFixed(6)}
-                </p>
+                {isGeocoding ? (
+                  <p className="text-xs text-muted-foreground">
+                    جاري الحصول على تفاصيل الموقع...
+                  </p>
+                ) : (
+                  <>
+                    {selectedLocation.formattedAddress ? (
+                      <p className="text-xs text-foreground mb-1">
+                        {selectedLocation.formattedAddress}
+                      </p>
+                    ) : selectedLocation.address ? (
+                      <p className="text-xs text-foreground mb-1">
+                        {selectedLocation.address}
+                        {selectedLocation.city && `, ${selectedLocation.city}`}
+                        {selectedLocation.country && `, ${selectedLocation.country}`}
+                      </p>
+                    ) : null}
+                    <p className="text-xs text-muted-foreground">
+                      خط العرض: {selectedLocation.lat.toFixed(6)}, خط الطول:{" "}
+                      {selectedLocation.lng.toFixed(6)}
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           )}
-        </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={() => handleOpenChange(false)}>
-            إلغاء
-          </Button>
-          <Button
-            disabled={!selectedLocation}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground"
-            onClick={handleConfirm}
-          >
-            {confirmLabel}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          
+        </>
+      )}
+    </div>
   );
 };

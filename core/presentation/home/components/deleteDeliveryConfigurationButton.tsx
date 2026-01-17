@@ -4,11 +4,16 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useServerActionMutation } from "@/core/infrastructure/config/server-action-hooks";
 import { deleteDeliveryConfiguration } from "../../actions/delete-delivery-configuration.actions";
+import { queryClient } from "@/lib/providers/query-provider";
 
 export function DeleteDeliveryConfigurationButton() {
   const { mutate, isPending } = useServerActionMutation(
     deleteDeliveryConfiguration,
-    {}
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["delivery-configuration"] });
+      },
+    }
   );
 
   return (

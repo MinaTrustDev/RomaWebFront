@@ -1,15 +1,16 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useLocalStore } from "@/core/presentation/store/local.store";
 import { DELIVERY_METHODS } from "@/core/domain/constants/delivery-methods.constant";
-import { cn } from "@/lib/utils";
-import { UtensilsCrossed, ShoppingBag, Truck } from "lucide-react";
+import { UtensilsCrossed, ShoppingBag, Truck, MapPin } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { OrderFlowManager } from "./order-flow-manager";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import ListBranches from "../../components/client/ListBranches";
+import { useState } from "react";
+import { Location, MapSelector } from "@/components/common/map-selector";
+import { useServerActionMutation } from "@/core/infrastructure/config/server-action-hooks";
+import {  getNearbyBranchesAction } from "../../actions/get-nearby-branches.action";
+import { setDeliveryConfiguration } from "../../actions/set-delivery-configuration.action";
 
 const methodIcons = {
   "dine-in": UtensilsCrossed,
@@ -72,11 +73,47 @@ const PickupContent = () => {
 };
 
 const DeliveryContent = () => {
+  const [location, setLocation] = useState<string>("");
+  const router = useRouter();
+  const {mutate: setDeliveryConfigAction} = useServerActionMutation(setDeliveryConfiguration, {})
+const {mutate: findNearbyBranches, isError, error} = useServerActionMutation(getNearbyBranchesAction, {
+  onSuccess: (data) => {
+    
+    setDeliveryConfigAction({
+      deliveryConfiguration: {
+        order_type: "delivery",
+        branchId: data.id,
+        address: location,
+      },
+    })
+    router.refresh();
+
+  },
+  onError: (error) => {
+    alert(error.message);
+  },
+})
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
+
+  const handleLocationSelect = (
+    location: Location
+  ) => {
+    setLocation(location.formattedAddress || "");
+    findNearbyBranches({latitude: location.lat, longitude: location.lng});
+    
+  };
+
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>التوصيل</CardTitle>
-      </CardHeader>
+    <Card className="w-full h-full">
+      <CardContent className="w-full h-full pt-3">
+      <MapSelector
+      onLocationSelect={handleLocationSelect}
+      title="حدد موقع التوصيل"
+      description="انقر على الخريطة لتحديد موقع التوصيل أو استخدم زر الكشف التلقائي"
+      confirmLabel="البحث عن فروع قريبة"
+    />
+      </CardContent>
     </Card>
   );
 };

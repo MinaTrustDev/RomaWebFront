@@ -12,7 +12,8 @@ export class AddToCardUseCase {
     const deliveryConfiguration = await this.storageRepository.get(
       "delivery_configuration"
     );
-    if (!deliveryConfiguration) {
+    console.log("deliveryConfiguration", deliveryConfiguration);
+    if (!deliveryConfiguration || deliveryConfiguration === null) {
       throw new MissingDeliveryConfiguration("Missing delivery configuration");
     }
   }

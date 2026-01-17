@@ -40,6 +40,14 @@ This document lists all the environment variables required for this project.
   - Default: `https://roma2go.com`
   - Exposed to the browser
 
+### Google Maps API
+
+- **`NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`** (required, public)
+  - Google Maps API key for map functionality
+  - **Must be prefixed with `NEXT_PUBLIC_`** to be accessible in client components
+  - Exposed to the browser (this is safe as Google Maps API keys are meant to be public)
+  - Used in map selector and location features
+
 ## Setting Environment Variables in Vercel
 
 1. Go to your project in Vercel Dashboard
@@ -49,6 +57,7 @@ This document lists all the environment variables required for this project.
    - `API_AUTH_PASSWORD` - Your API password
    - `NEXT_PUBLIC_IMAGE_DOMAIN` - Your image domain (optional)
    - `NEXT_PUBLIC_SITE_URL` - Your site URL (optional)
+   - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` - Google Maps API key (required)
    - `API_BASE_URL` - API base URL (optional)
    - `NEXT_PUBLIC_API_BASE_URL` - Public API base URL (optional)
 
@@ -70,9 +79,16 @@ NEXT_PUBLIC_IMAGE_DOMAIN=roma2go.com
 
 # Site URL
 NEXT_PUBLIC_SITE_URL=https://roma2go.com
+
+# Google Maps API Key (required for map features)
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key_here
 ```
 
 **Note:** Never commit `.env.local` to version control. It's already in `.gitignore`.
+
+
+
+
 
 
 

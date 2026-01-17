@@ -1,11 +1,4 @@
-import { getBranchItems } from "@/core/presentation/actions/get-branch-items.action";
 import { ProductSlider } from "./productSlider";
-import { Badge } from "@/components/ui/badge";
-import { MapPin, Clock } from "lucide-react";
-import { BranchDTO } from "@/core/domain/dtos/branch.dto";
-import { StructuredData } from "./structured-data";
-import { BranchHeader } from "./branch-header";
-import { cn } from "@/lib/utils";
 import OffersSlider from "./OffersSlider";
 import { CategoryEntity } from "@/core/domain/entities/category.entity";
 import { BranchEntity } from "@/core/domain/entities/branch.entity";

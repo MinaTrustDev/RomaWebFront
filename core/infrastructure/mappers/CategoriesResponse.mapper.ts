@@ -12,7 +12,7 @@ export class CategoriesResponseMapper {
       category.products.map(
         (product) =>
           new ProductEntity({
-            id: product.id.toString(),
+            id: product.id,
             name: product.name,
             name_en: product.name_en,
             name_ar: product.name_ar,
@@ -20,8 +20,8 @@ export class CategoriesResponseMapper {
             description: product.description,
             description_en: product.description_en,
             description_ar: product.description_ar,
-            price: parseFloat(product.price),
-            price_tax: parseFloat(product.price_tax.toString()),
+            price: product.price,
+            price_tax: product.price_tax,
             image: product.image,
             offer_menu_image: product.offer_menu_image,
             stock_status: product.stock_status as

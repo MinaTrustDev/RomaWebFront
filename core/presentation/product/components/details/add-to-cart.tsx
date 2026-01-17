@@ -1,23 +1,36 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useServerActionMutation } from "@/core/infrastructure/config/server-action-hooks";
+import { addToCartAction } from "@/core/presentation/actions/add-to-cart.action";
+import { MethodSelectionDialog } from "@/core/presentation/home/components/methodSelectionDialog";
 import { ShoppingCart } from "lucide-react";
+import { useActionState } from "react";
 
 interface AddToCartProps {
-  onAddToCart: () => void;
   disabled?: boolean;
   price: number;
   points: number;
+  productId: number;
 }
 
 export const AddToCart = ({
-  onAddToCart,
   disabled,
   price,
   points,
+  productId,
 }: AddToCartProps) => {
+  const { mutate, isPending, isError } = useServerActionMutation(
+    addToCartAction,
+    undefined
+  );
+  const onAddToCart = async () => {
+    const result = await mutate({ productId: productId });
+  };
+
   return (
     <div className="pt-6 mt-auto">
+      <MethodSelectionDialog isOpen={isError} />
       <Button
         size="lg"
         className="w-full h-16 text-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl shadow-primary/25 hover:shadow-2xl hover:shadow-primary/40 hover:-translate-y-1 transition-all duration-300 rounded-[2rem]"

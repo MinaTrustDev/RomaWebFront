@@ -8,12 +8,12 @@ import { ShoppingCart, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export interface ProductCardData {
-  id: string;
+  id: number;
   name: string;
   name_ar?: string;
   name_en?: string;
   description_ar?: string;
-  price: number;
+  price: string;
   price_tax: number;
   image?: string;
   stock_status: "instock" | "outofstock" | "lowstock";
@@ -21,7 +21,7 @@ export interface ProductCardData {
 
 interface ProductCardProps extends React.HTMLAttributes<HTMLDivElement> {
   product: ProductCardData;
-  onAddToCart?: (productId: string) => void;
+  onAddToCart?: (productId: number) => void;
   showAddButton?: boolean;
   aspectRatio?: "square" | "wide";
 }
@@ -121,11 +121,11 @@ export const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
                   ج.م
                 </span>
               </div>
-              {product.price_tax && product.price_tax > product.price && (
+              {/* {product.price_tax && product.price_tax > product.price && (
                 <span className="text-sm text-muted-foreground/50 line-through decoration-primary/30">
                   {Math.round(product.price_tax * 1.1)}
                 </span>
-              )}
+              )} */}
             </div>
 
             {isInStock && showAddButton && (

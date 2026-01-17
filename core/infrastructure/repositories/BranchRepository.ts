@@ -15,6 +15,9 @@ import { CategoriesResponseDTO } from "../dtos/CategoriesResponse.dto";
 import { CategoriesResponseMapper } from "../mappers/CategoriesResponse.mapper";
 import { BranchItemsDTO } from "../dtos/BranchItems.dto";
 import { BranchItemsResponseMapper } from "../mappers/BranchItemsResponse.mapper";
+import { NearbyResponseMapper } from "../mappers/NearbyResponseMapper";
+import { NearbyBranchResponseDTO } from "../dtos/GetNearbyBranchResponse.dto";
+import { NearbyBranchEntity } from "@/core/domain/entities/NearbyBranch.entity";
 
 export class BranchRepository implements IBranchRepository {
   async getBranchesByOrderType(
@@ -40,10 +43,27 @@ export class BranchRepository implements IBranchRepository {
   }
 
   async getNearbyBranches(
-    latitude: string,
-    longitude: string
-  ): Promise<BranchEntity[]> {
-    throw new Error("Not Implemented");
+    latitude: number,
+    longitude: number
+  ): Promise<NearbyBranchEntity> {
+
+    const response: Response = await fetch(
+      `${API_CONFIG.BASE_URL}/stora/v1/branches/nearby`,
+      {
+        method: "POST",
+        headers: API_CONFIG.HEADERS,
+        body: JSON.stringify({ latitude: latitude.toString(), longitude: longitude.toString() }),
+      }
+    );
+
+
+    console.log("error", response.bodyUsed);
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+
+    const data: NearbyBranchResponseDTO = await response.json();
+    return NearbyResponseMapper.toDomain(data.branches[0]);
   }
 
   async getBranchById(branchId: number): Promise<BranchEntity> {

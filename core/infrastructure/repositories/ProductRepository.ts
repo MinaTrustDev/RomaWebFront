@@ -55,6 +55,8 @@ export class ProductRepository implements IProductRepository {
       }
     );
 
+    
+
     if (!response.ok) {
       throw new Error("Failed to fetch categories");
     }

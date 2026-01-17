@@ -15,7 +15,7 @@ export type ProductData = ProductDTO;
 interface ProductSliderProps {
   products: ProductEntity[];
   title: string;
-  onAddToCart?: (productId: string) => void;
+  onAddToCart?: (productId: number) => void;
   aspectRatio?: "square" | "wide";
 }
 
@@ -106,7 +106,7 @@ export const ProductSlider = ({
               price: product.price,
               price_tax: product.price_tax,
               image: product.image,
-              stock_status: product.stock_status,
+              stock_status: product.stock_status as "instock" | "outofstock" | "lowstock",
             };
             return (
               <div

@@ -1,21 +1,22 @@
 "use client";
 
+import { VariationEntity } from "@/core/domain/entities/variants.entity";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
-import { VariantData } from "../product-detail";
+import { useState } from "react";
 
 interface VariantSelectorProps {
-  variants: VariantData[];
-  selectedVariant: VariantData | null;
-  onSelectVariant: (variant: VariantData) => void;
+  variants: VariationEntity[];
 }
 
-export const VariantSelector = ({
-  variants,
-  selectedVariant,
-  onSelectVariant,
-}: VariantSelectorProps) => {
+export const VariantSelector = ({ variants }: VariantSelectorProps) => {
+  const [selectedVariant, setSelectedVariant] =
+    useState<VariationEntity | null>(null);
   if (!variants || variants.length === 0) return null;
+
+  const onSelectVariant = (variant: VariationEntity) => {
+    console.log(variant);
+  };
 
   // Helper to clean HTML from variant names
   const cleanVariantName = (name: string) => {
@@ -35,7 +36,7 @@ export const VariantSelector = ({
     }
     acc[size].push(variant);
     return acc;
-  }, {} as Record<string, VariantData[]>);
+  }, {} as Record<string, VariationEntity[]>);
 
   return (
     <div className="space-y-6 pt-2">

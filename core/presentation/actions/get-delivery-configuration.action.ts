@@ -1,3 +1,5 @@
+"use server";
+
 import { getDeliveryConfigurationUseCase } from "@/core/di";
 import { createServerAction } from "zsa";
 
