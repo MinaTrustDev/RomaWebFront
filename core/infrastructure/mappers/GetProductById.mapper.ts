@@ -24,6 +24,7 @@ export class GetProductByIdMapper {
       stock_status: product.stock_status,
       related_products: product.related_ids,
       variants: ProductVariationMapper.toDomainList(product.variations),
+      branch_ids: product.branch_ids,
     });
   }
 }

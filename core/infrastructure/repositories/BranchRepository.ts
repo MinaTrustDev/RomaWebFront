@@ -24,21 +24,16 @@ export class BranchRepository implements IBranchRepository {
     order_type: string
   ): Promise<BranchTypeEntity[]> {
     console.log("getBranchesByOrderType - orderType:", order_type);
-    const response: Response = await fetch(
+    const response = await axiosClient.get<BranchByOrderTypeDTO[]>(
       `${API_CONFIG.BASE_URL}/stora/v1/branch-items?order_type=${order_type}`,
       {
-        method: "GET",
         headers: API_CONFIG.HEADERS,
       }
     );
 
     console.log("getBranchesByOrderType - response:", response);
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch branches");
-    }
-
-    const data: BranchByOrderTypeDTO[] = await response.json();
+    const data: BranchByOrderTypeDTO[] = response.data;
     return BranchByOrderTypeMapper.toDomainList(data);
   }
 
@@ -47,39 +42,30 @@ export class BranchRepository implements IBranchRepository {
     longitude: number
   ): Promise<NearbyBranchEntity> {
 
-    const response: Response = await fetch(
+    const response = await axiosClient.post<NearbyBranchResponseDTO>(
       `${API_CONFIG.BASE_URL}/stora/v1/branches/nearby`,
+      { latitude: latitude.toString(), longitude: longitude.toString() },
       {
-        method: "POST",
         headers: API_CONFIG.HEADERS,
-        body: JSON.stringify({ latitude: latitude.toString(), longitude: longitude.toString() }),
       }
     );
 
+    console.log("getNearbyBranches - response:", response);
 
-    console.log("error", response.bodyUsed);
-    if (!response.ok) {
-      throw new Error(await response.text());
-    }
-
-    const data: NearbyBranchResponseDTO = await response.json();
+    const data: NearbyBranchResponseDTO = response.data;
     return NearbyResponseMapper.toDomain(data.branches[0]);
   }
 
   async getBranchById(branchId: number): Promise<BranchEntity> {
     console.log("getBranchById - branchId:", branchId);
-    const response: Response = await fetch(
+    const response = await axiosClient.get<BranchItemsDTO[]>(
       `${API_CONFIG.BASE_URL}/stora/v1/branch-items?branch_id=${branchId}`,
       {
-        method: "GET",
         headers: API_CONFIG.HEADERS,
       }
     );
-    if (!response.ok) {
-      throw new Error("Failed to fetch categories");
-    }
-
-    const data: BranchItemsDTO[] = await response.json();
+    
+    const data: BranchItemsDTO[] = response.data;
     return BranchItemsResponseMapper.toDomain(data[0]);
   }
 }

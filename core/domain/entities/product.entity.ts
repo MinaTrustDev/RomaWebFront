@@ -25,6 +25,7 @@ export class ProductEntity {
 
   public readonly variants?: VariationEntity[];
   public readonly related_products?: number[];
+  public readonly branch_ids?: number[];
   constructor({
     id,
     name,
@@ -42,6 +43,7 @@ export class ProductEntity {
     points,
     variants,
     related_products,
+    branch_ids,
   }: {
     id: number;
     name: string;
@@ -59,6 +61,7 @@ export class ProductEntity {
     points: number;
     variants?: VariationEntity[];
     related_products?: number[];
+    branch_ids?: number[];
   }) {
     this.id = id;
     this.name = name;
@@ -76,5 +79,6 @@ export class ProductEntity {
     this.points = points;
     this.variants = variants;
     this.related_products = related_products;
+    this.branch_ids = branch_ids;
   }
 }

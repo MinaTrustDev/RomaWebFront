@@ -8,60 +8,43 @@ import { CategoriesResponseDTO } from "../dtos/CategoriesResponse.dto";
 import { CategoriesResponseMapper } from "../mappers/CategoriesResponse.mapper";
 import { GetProductByIdMapper } from "../mappers/GetProductById.mapper";
 import { GetProductByIdResponseDTO } from "../dtos/GetProductByIdResponse.dto";
+import { axiosClient } from "@/lib/axiosClient";
 
 export class ProductRepository implements IProductRepository {
   async getProductById(productId: number): Promise<ProductEntity> {
-    const response: Response = await fetch(
+    const response = await axiosClient.get<GetProductByIdResponseDTO[]>(
       `${API_CONFIG.BASE_URL}/custom-api/v1/products?product_id=${productId}`,
       {
-        method: "GET",
         headers: API_CONFIG.HEADERS,
-        credentials: "include",
-        cache: "no-store",
+        withCredentials: true,
       }
     );
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch product");
-    }
-
-    const data: GetProductByIdResponseDTO[] = await response.json();
+    const data: GetProductByIdResponseDTO[] = response.data;
     return GetProductByIdMapper.toDomain(data[0]);
   }
 
   async getAllProducts(): Promise<ProductEntity[]> {
-    const response: Response = await fetch(
+    const response = await axiosClient.get<ProductsResponseDTO[]>(
       `${API_CONFIG.BASE_URL}/custom-api/v1/products/`,
       {
-        method: "GET",
         headers: API_CONFIG.HEADERS,
       }
     );
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch products");
-    }
-
-    const data: ProductsResponseDTO[] = await response.json();
+    const data: ProductsResponseDTO[] = response.data;
     return ProductsResponseMapper.toDomainList(data);
   }
 
   async getAllCategories(): Promise<CategoryEntity[]> {
-    const response: Response = await fetch(
+    const response = await axiosClient.get<CategoriesResponseDTO[]>(
       `${API_CONFIG.BASE_URL}/custom-api/v1/categories/`,
       {
-        method: "GET",
         headers: API_CONFIG.HEADERS,
       }
     );
 
-    
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch categories");
-    }
-
-    const data: CategoriesResponseDTO[] = await response.json();
+    const data: CategoriesResponseDTO[] = response.data;
     return CategoriesResponseMapper.toDomainList(data);
   }
 }

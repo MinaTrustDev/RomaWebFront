@@ -2,9 +2,10 @@
 
 import { ProductDTO } from "@/core/domain/dtos/product.dto";
 import { SEO_CONSTANTS } from "@/core/domain/constants/seo.constant";
+import { ProductEntity } from "@/core/domain/entities/product.entity";
 
 interface ProductStructuredDataProps {
-  product: ProductDTO;
+  product: ProductEntity;
 }
 
 export const ProductStructuredData = ({

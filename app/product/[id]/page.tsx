@@ -10,6 +10,8 @@ import { PriceDisplay } from "@/core/presentation/product/components/details/pri
 import { AddToCart } from "@/core/presentation/product/components/details/add-to-cart";
 import { ProductHeader } from "@/core/presentation/product/components/details/product-header";
 import { getDeliveryConfiguration } from "@/core/presentation/actions/get-delivery-configuration.action";
+import { ProductEntity } from "@/core/domain/entities/product.entity";
+import { DeliveryConfiguration } from "@/core/domain/value-objects/deliveryConfigurations";
 
 // Generate metadata for product pages
 export async function generateMetadata({
@@ -71,10 +73,11 @@ export default async function ProductDetailPage({
 }) {
   const { id } = await params;
 
-  let product;
+  let product: ProductEntity;
+  let deliveryConfig: DeliveryConfiguration;
   try {
-    product = JSON.parse(JSON.stringify(await getProductDetails(id)));
-    const deliveryConfig = await getDeliveryConfiguration();
+    product = JSON.parse(JSON.stringify(await getProductDetails(id))) as ProductEntity;
+    deliveryConfig = JSON.parse(JSON.stringify(await getDeliveryConfiguration())) as DeliveryConfiguration;
 
     console.log("deliveryConfig", deliveryConfig);
   } catch (error) {
@@ -82,7 +85,7 @@ export default async function ProductDetailPage({
     notFound();
   }
 
-  if (!product) {
+  if (!product || (deliveryConfig.branchId && !product.branch_ids?.includes(deliveryConfig.branchId))) {
     notFound();
   }
   return (
