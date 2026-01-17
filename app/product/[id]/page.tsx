@@ -3,15 +3,23 @@ import { ProductStructuredData } from "@/core/presentation/product/components/pr
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SEO_CONSTANTS } from "@/core/domain/constants/seo.constant";
-import { ProductBackButton } from "@/core/presentation/product/components/ProductBackButton";
-import { ProductImage } from "@/core/presentation/product/components/details/product-image";
-import { VariantSelector } from "@/core/presentation/product/components/details/variant-selector";
-import { PriceDisplay } from "@/core/presentation/product/components/details/price-display";
-import { AddToCart } from "@/core/presentation/product/components/details/add-to-cart";
-import { ProductHeader } from "@/core/presentation/product/components/details/product-header";
+import dynamic from "next/dynamic";
 import { getDeliveryConfiguration } from "@/core/presentation/actions/get-delivery-configuration.action";
 import { ProductEntity } from "@/core/domain/entities/product.entity";
 import { DeliveryConfiguration } from "@/core/domain/value-objects/deliveryConfigurations";
+
+// Lazy load product detail components (keep SSR for SEO)
+const ProductBackButton = dynamic(() => import("@/core/presentation/product/components/ProductBackButton").then(mod => ({ default: mod.ProductBackButton })));
+
+const ProductImage = dynamic(() => import("@/core/presentation/product/components/details/product-image").then(mod => ({ default: mod.ProductImage })));
+
+const VariantSelector = dynamic(() => import("@/core/presentation/product/components/details/variant-selector").then(mod => ({ default: mod.VariantSelector })));
+
+const PriceDisplay = dynamic(() => import("@/core/presentation/product/components/details/price-display").then(mod => ({ default: mod.PriceDisplay })));
+
+const AddToCart = dynamic(() => import("@/core/presentation/product/components/details/add-to-cart").then(mod => ({ default: mod.AddToCart })));
+
+const ProductHeader = dynamic(() => import("@/core/presentation/product/components/details/product-header").then(mod => ({ default: mod.ProductHeader })));
 
 // Generate metadata for product pages
 export async function generateMetadata({
@@ -112,7 +120,17 @@ export default async function ProductDetailPage({
                 </div>
               )}
 
-              <div className="hidden lg:col-span-5 md:flex flex-col space-y-8 md:space-y-10 sticky top-8">
+              
+              <div className="md:hidden sticky bottom-0 bg-white p-4 pt-0 w-full border border-primary rounded-t-md">
+                <AddToCart
+                  disabled={product.stock_status !== "instock"}
+                  price={product.price_tax}
+                  points={product.points}
+                  productId={product.id}
+                />
+              </div>
+            </div>
+            <div className="hidden lg:col-span-5 md:flex flex-col space-y-8 md:space-y-10 sticky top-8">
                 <ProductHeader
                   name={product.name_ar}
                   description={product.description_ar}
@@ -132,15 +150,6 @@ export default async function ProductDetailPage({
                   />
                 </div>
               </div>
-              <div className="md:hidden sticky bottom-0 bg-white p-4 pt-0 w-full border border-primary rounded-t-md">
-                <AddToCart
-                  disabled={product.stock_status !== "instock"}
-                  price={product.price_tax}
-                  points={product.points}
-                  productId={product.id}
-                />
-              </div>
-            </div>
           </div>
         </div>
       </div>

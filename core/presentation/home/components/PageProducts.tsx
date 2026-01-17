@@ -1,7 +1,11 @@
-import { ProductSlider } from "./productSlider";
-import OffersSlider from "./OffersSlider";
+import dynamic from "next/dynamic";
 import { CategoryEntity } from "@/core/domain/entities/category.entity";
 import { BranchEntity } from "@/core/domain/entities/branch.entity";
+
+// Lazy load slider components (keep SSR for SEO, but lazy load for performance)
+const ProductSlider = dynamic(() => import("./productSlider").then(mod => ({ default: mod.ProductSlider })));
+
+const OffersSlider = dynamic(() => import("./OffersSlider").then(mod => ({ default: mod.default })));
 
 export const PageProducts = async ({ branch }: { branch: BranchEntity }) => {
   return (
