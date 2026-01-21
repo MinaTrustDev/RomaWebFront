@@ -2,6 +2,7 @@ import { AddToCardUseCase } from "../application/use-cases/AddToCard.UseCase";
 import { GetProductsUseCase } from "../application/use-cases/GetAllProducts.UseCase";
 import { GetBranchesByOrderTypeUseCase } from "../application/use-cases/GetBranchesByOrderType.UseCase";
 import { GetDeliveryConfigurationUseCase } from "../application/use-cases/GetDeliveryConfiguration.UseCase";
+import { GetDontMissUseCase } from "../application/use-cases/GetDontMiss.UseCase";
 import { GetNearbyBranchesUseCase } from "../application/use-cases/GetNearbyBranchesUseCase";
 import { GetProductByIdUseCase } from "../application/use-cases/GetProductByIdUseCase";
 import { GetProductBySlugUseCase } from "../application/use-cases/GetProductBySlug.UseCase";
@@ -46,5 +47,8 @@ export const getProductBySlugUseCase = new GetProductBySlugUseCase(
   productRepository
 );
 export const getProductVariationsUseCase = new GetProductVariationsUseCase(
+  productRepository
+);
+export const getDontMissUseCase = new GetDontMissUseCase(
   productRepository
 );

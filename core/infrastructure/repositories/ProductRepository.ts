@@ -86,4 +86,16 @@ export class ProductRepository implements IProductRepository {
     
     return ProductVariationMapper.toDomainList(variations);
   }
+
+  async getDontMessProductsId() : Promise<number[]> {
+    const response = await axiosClient.get<{ products: number[] }>(
+      `${API_CONFIG.BASE_URL}/simple-products/v1/get-ids`,
+      {
+        headers: API_CONFIG.HEADERS,
+      }
+    );
+
+    const data: { products: number[] } = response.data;
+    return data.products;
+  }
 }

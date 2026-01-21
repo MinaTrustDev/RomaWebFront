@@ -6,6 +6,7 @@ import { SEO_CONSTANTS } from "@/core/domain/constants/seo.constant";
 import dynamic from "next/dynamic";
 import { getDeliveryConfigurationAction } from "@/core/presentation/actions/get-delivery-configuration.action";
 import { Suspense } from "react";
+import { getProductVariations } from "@/core/presentation/actions/get-product-variations";
 
 // Lazy load product detail components (keep SSR for SEO)
 const ProductBackButton = dynamic(() => import("@/core/presentation/product/components/ProductBackButton").then(mod => ({ default: mod.ProductBackButton })));
@@ -31,10 +32,12 @@ export default async function ProductDetailPage({
   const [deliveryConfig, _] = await getDeliveryConfigurationAction();
 
   const [product, productNotFound] = await getProductBySlugAction({slug: slug, branchId: deliveryConfig?.branchId});
- 
+  
   if (productNotFound) {
     notFound();
   }
+
+  const [variations, error] = await getProductVariations({productId: product?.id});
 
   return (
     <>
@@ -50,15 +53,15 @@ export default async function ProductDetailPage({
                 stockStatus={product.stock_status}
                 points={product.points}
               />
-              <div className="space-y-4">
+             {variations && variations.length > 0 && <div className="space-y-4">
                   <h3 className="text-2xl font-bold text-foreground px-2">
                     خيارات المنتج
                   </h3>
 
                   <Suspense fallback={<div className="h-[100px] w-full bg-gray-200 rounded-lg animate-pulse" />}>
-                    <VariantSelector productId={product.id} />
+                    <VariantSelector variants={variations} />
                   </Suspense>
-                </div>
+                </div>}
 
               
               <div className="md:hidden sticky bottom-0 bg-white p-4 pt-0 w-full border border-primary rounded-t-md">

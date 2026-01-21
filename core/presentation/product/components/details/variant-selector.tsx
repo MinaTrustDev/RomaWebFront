@@ -7,24 +7,14 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 interface VariantSelectorProps {
-  productId: number;
+  variants: VariationEntity[];
 }
 
-const getVariationsQuery = (productId: number) => {
-  return useSuspenseQuery({
-    queryKey: ['variations', productId],
-    queryFn: async () => {
-      const [variations, error] = await getProductVariations({productId: productId});
-      return variations;
-    },
-  })
-}
 
-export const VariantSelector = ({ productId }: VariantSelectorProps) => {
-  const { data: variants } = getVariationsQuery(productId);
+export const VariantSelector = ({ variants }: VariantSelectorProps) => {
   
   const [selectedVariant, setSelectedVariant] =
-    useState<VariationEntity>(variants[0]);
+    useState<VariationEntity | null>(variants?.[0] || null);
 
   const onSelectVariant = (variant: VariationEntity) => {
     setSelectedVariant(variant);

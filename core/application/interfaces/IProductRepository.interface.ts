@@ -8,4 +8,5 @@ export interface IProductRepository {
   getAllCategories(): Promise<CategoryEntity[]>;
   getProductBySlug(slug: string, branchId?: number): Promise<ProductEntity>;
   getProductVariations(productId: number): Promise<VariationEntity[]>;
+  getDontMessProductsId(): Promise<number[]>;
 }

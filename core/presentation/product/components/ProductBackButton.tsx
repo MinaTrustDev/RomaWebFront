@@ -9,7 +9,7 @@ export const ProductBackButton = () => {
   return (
     <Button
       variant="ghost"
-      onClick={() => router.back()}
+      onClick={() => router.push("/")}
       className="mb-8 md:mb-12 text-muted-foreground hover:text-foreground hover:bg-muted/50 -mr-4"
     >
       <ArrowRight className="h-5 w-5 ml-2" />
