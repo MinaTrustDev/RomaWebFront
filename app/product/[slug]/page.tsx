@@ -1,12 +1,11 @@
-import { getProductDetails } from "@/core/presentation/actions/get-product-details.action";
+import { getProductBySlugAction } from "@/core/presentation/actions/get-product-details.action";
 import { ProductStructuredData } from "@/core/presentation/product/components/product-structured-data";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { SEO_CONSTANTS } from "@/core/domain/constants/seo.constant";
 import dynamic from "next/dynamic";
-import { getDeliveryConfiguration } from "@/core/presentation/actions/get-delivery-configuration.action";
-import { ProductEntity } from "@/core/domain/entities/product.entity";
-import { DeliveryConfiguration } from "@/core/domain/value-objects/deliveryConfigurations";
+import { getDeliveryConfigurationAction } from "@/core/presentation/actions/get-delivery-configuration.action";
+import { Suspense } from "react";
 
 // Lazy load product detail components (keep SSR for SEO)
 const ProductBackButton = dynamic(() => import("@/core/presentation/product/components/ProductBackButton").then(mod => ({ default: mod.ProductBackButton })));
@@ -21,81 +20,22 @@ const AddToCart = dynamic(() => import("@/core/presentation/product/components/d
 
 const ProductHeader = dynamic(() => import("@/core/presentation/product/components/details/product-header").then(mod => ({ default: mod.ProductHeader })));
 
-// Generate metadata for product pages
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ id: number }>;
-}): Promise<Metadata> {
-  const { id } = await params;
-  const product = await getProductDetails(id);
-
-  if (!product) {
-    return {
-      title: "Product Not Found",
-    };
-  }
-
-  const title = product.name_ar || product.name_en || product.name;
-  const description =
-    product.description_ar ||
-    product.description_en ||
-    product.description ||
-    SEO_CONSTANTS.defaultDescription;
-  const image = product.image || product.offer_menu_image;
-
-  return {
-    title,
-    description,
-    openGraph: {
-      title,
-      description,
-      images: image
-        ? [
-            {
-              url: image,
-              width: 1200,
-              height: 630,
-              alt: title,
-            },
-          ]
-        : [],
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: image ? [image] : [],
-    },
-    alternates: {
-      canonical: `${SEO_CONSTANTS.siteUrl}/product/${id}`,
-    },
-  };
-}
 
 export default async function ProductDetailPage({
   params,
 }: {
-  params: Promise<{ id: number }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { id } = await params;
+  const { slug } = await params;
 
-  let product: ProductEntity;
-  let deliveryConfig: DeliveryConfiguration;
-  try {
-    product = JSON.parse(JSON.stringify(await getProductDetails(id))) as ProductEntity;
-    deliveryConfig = JSON.parse(JSON.stringify(await getDeliveryConfiguration())) as DeliveryConfiguration;
+  const [deliveryConfig, _] = await getDeliveryConfigurationAction();
 
-    console.log("deliveryConfig", deliveryConfig);
-  } catch (error) {
-    console.error("Failed to fetch product:", error);
+  const [product, productNotFound] = await getProductBySlugAction({slug: slug, branchId: deliveryConfig?.branchId});
+ 
+  if (productNotFound) {
     notFound();
   }
 
-  if (!product || (deliveryConfig.branchId && !product.branch_ids?.includes(deliveryConfig.branchId))) {
-    notFound();
-  }
   return (
     <>
       <ProductStructuredData product={product} />
@@ -110,15 +50,15 @@ export default async function ProductDetailPage({
                 stockStatus={product.stock_status}
                 points={product.points}
               />
-              {/* Variants - Placed Under the Image */}
-              {product.variants && product.variants.length > 0 && (
-                <div className="space-y-4">
+              <div className="space-y-4">
                   <h3 className="text-2xl font-bold text-foreground px-2">
                     خيارات المنتج
                   </h3>
-                  <VariantSelector variants={product.variants} />
+
+                  <Suspense fallback={<div className="h-[100px] w-full bg-gray-200 rounded-lg animate-pulse" />}>
+                    <VariantSelector productId={product.id} />
+                  </Suspense>
                 </div>
-              )}
 
               
               <div className="md:hidden sticky bottom-0 bg-white p-4 pt-0 w-full border border-primary rounded-t-md">
@@ -155,4 +95,58 @@ export default async function ProductDetailPage({
       </div>
     </>
   );
+}
+
+
+// Generate metadata for product pages
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const [product, _] = await getProductBySlugAction({slug: slug});
+
+  if (!product) {
+    return {
+      title: "Product Not Found",
+    };
+  }
+
+  const title = product.name_ar || product.name_en || product.name;
+  const description =
+    product.description_ar ||
+    product.description_en ||
+    product.description ||
+    SEO_CONSTANTS.defaultDescription;
+  const image = product.image || product.offer_menu_image;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: image
+        ? [
+            {
+              url: image,
+              width: 1200,
+              height: 630,
+              alt: title,
+            },
+          ]
+        : [],
+      type: "website",
+    },
+    twitter: {
+      card: product.image || product.offer_menu_image,
+      title,
+      description,
+      images: image ? [image] : [],
+    },
+    alternates: {
+      canonical: `${SEO_CONSTANTS.siteUrl}/product/${slug}`,
+    },
+  };
 }

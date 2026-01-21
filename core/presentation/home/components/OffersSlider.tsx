@@ -25,7 +25,7 @@ export default function OffersSlider({
 }) {
   const router = useRouter();
   const handleCardClick = (product: ProductEntity) => {
-    router.push(`/product/${product.id}`);
+    router.push(`/product/${product.slug}`);
   };
 
   const plugin = useRef(

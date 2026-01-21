@@ -99,6 +99,7 @@ export const ProductSlider = ({
           {products.map((product) => {
             const productCardData: ProductCardData = {
               id: product.id,
+              slug: product.slug,
               name: product.name,
               name_ar: product.name_ar,
               name_en: product.name_en,

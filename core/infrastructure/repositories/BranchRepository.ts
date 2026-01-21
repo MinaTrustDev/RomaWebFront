@@ -23,15 +23,12 @@ export class BranchRepository implements IBranchRepository {
   async getBranchesByOrderType(
     order_type: string
   ): Promise<BranchTypeEntity[]> {
-    console.log("getBranchesByOrderType - orderType:", order_type);
     const response = await axiosClient.get<BranchByOrderTypeDTO[]>(
       `${API_CONFIG.BASE_URL}/stora/v1/branch-items?order_type=${order_type}`,
       {
         headers: API_CONFIG.HEADERS,
       }
     );
-
-    console.log("getBranchesByOrderType - response:", response);
 
     const data: BranchByOrderTypeDTO[] = response.data;
     return BranchByOrderTypeMapper.toDomainList(data);
@@ -50,14 +47,11 @@ export class BranchRepository implements IBranchRepository {
       }
     );
 
-    console.log("getNearbyBranches - response:", response);
-
     const data: NearbyBranchResponseDTO = response.data;
     return NearbyResponseMapper.toDomain(data.branches[0]);
   }
 
   async getBranchById(branchId: number): Promise<BranchEntity> {
-    console.log("getBranchById - branchId:", branchId);
     const response = await axiosClient.get<BranchItemsDTO[]>(
       `${API_CONFIG.BASE_URL}/stora/v1/branch-items?branch_id=${branchId}`,
       {

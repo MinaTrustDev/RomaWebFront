@@ -2,11 +2,16 @@
 import { AppError } from "@/core/domain/errors/AppError.errors";
 import { UnauthorizedError } from "../../domain/errors/UnauthorizedError";
 import { ValidationError } from "../../domain/errors/ValidationError";
+import { NotFoundError } from "@/core/domain/errors/NotFound.error";
 
 export class ApiErrorMapper {
   static toDomain(error: any, status: number): AppError {
     if (status === 401) {
       return new UnauthorizedError(error.message);
+    }
+
+    if (status === 404) {
+      return new NotFoundError(error.message);
     }
 
     if (error.errors) {

@@ -12,7 +12,7 @@ import {
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useServerActionQuery } from "@/core/infrastructure/config/server-action-hooks";
-import { getDeliveryConfiguration } from "../../actions/get-delivery-configuration.action";
+import { getDeliveryConfigurationAction } from "../../actions/get-delivery-configuration.action";
 
 // Lazy load DeliveryMethodTabs (contains heavy components like MapSelector)
 const DeliveryMethodTabs = dynamic(() => import("./delivery-method-tabs").then(mod => ({ default: mod.DeliveryMethodTabs })), {
@@ -29,7 +29,7 @@ const DeliveryMethodTabs = dynamic(() => import("./delivery-method-tabs").then(m
 
 export const MethodSelectionDialog = ({ isOpen }: { isOpen: boolean }) => {
   const { data: deliveryConfiguration } = useServerActionQuery(
-    getDeliveryConfiguration,
+    getDeliveryConfigurationAction,
     {
       input: undefined,
       queryKey: ["delivery-configuration"],

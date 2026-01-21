@@ -8,10 +8,10 @@ export class GetDeliveryConfigurationUseCase {
   async execute(): Promise<DeliveryConfiguration> {
     const deliveryConfiguration: DeliveryConfiguration =
       await this.storageRepository.get("delivery_configuration");
+
     if (!deliveryConfiguration) {
       throw new MissingDeliveryConfiguration("Missing delivery configuration");
     }
-    console.log("deliveryConfiguration", deliveryConfiguration);
 
     return deliveryConfiguration;
   }

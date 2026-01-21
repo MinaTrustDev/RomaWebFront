@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 
 export interface ProductCardData {
   id: number;
+  slug: string;
   name: string;
   name_ar?: string;
   name_en?: string;
@@ -46,7 +47,7 @@ export const ProductCard = React.forwardRef<HTMLDivElement, ProductCardProps>(
       if ((e.target as HTMLElement).closest("button")) {
         return;
       }
-      router.push(`/product/${product.id}`);
+      router.push(`/product/${product.slug}`);
     };
 
     return (

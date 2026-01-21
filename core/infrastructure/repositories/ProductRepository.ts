@@ -6,9 +6,15 @@ import { ProductsResponseDTO } from "../dtos/ProductsResponse.dto";
 import { CategoryEntity } from "@/core/domain/entities/category.entity";
 import { CategoriesResponseDTO } from "../dtos/CategoriesResponse.dto";
 import { CategoriesResponseMapper } from "../mappers/CategoriesResponse.mapper";
-import { GetProductByIdMapper } from "../mappers/GetProductById.mapper";
+import { ProductResponseMapper, ProductVariationMapper } from "../mappers/ProductResponse.mapper";
 import { GetProductByIdResponseDTO } from "../dtos/GetProductByIdResponse.dto";
 import { axiosClient } from "@/lib/axiosClient";
+import { ApiErrorMapper } from "../mappers/ApiErrorMapper";
+import { GetProductBySlugRequestMapper } from "../mappers/GetProductBySlugRequest.mapper";
+import { GetProductBySlugResponseMapper } from "../mappers/GetProductBySlugResponse.mapper";
+import { GetProductBySlugResponseDTO } from "../dtos/GetProductBySlug.dto";
+import { ProductVariationsResponseDTO } from "../dtos/ProductVariationsResponse.dto";
+import { VariationEntity } from "@/core/domain/entities/variants.entity";
 
 export class ProductRepository implements IProductRepository {
   async getProductById(productId: number): Promise<ProductEntity> {
@@ -21,7 +27,7 @@ export class ProductRepository implements IProductRepository {
     );
 
     const data: GetProductByIdResponseDTO[] = response.data;
-    return GetProductByIdMapper.toDomain(data[0]);
+    return ProductResponseMapper.toDomain(data[0]);
   }
 
   async getAllProducts(): Promise<ProductEntity[]> {
@@ -46,5 +52,38 @@ export class ProductRepository implements IProductRepository {
 
     const data: CategoriesResponseDTO[] = response.data;
     return CategoriesResponseMapper.toDomainList(data);
+  }
+
+  async getProductBySlug(slug: string, branchId?: number): Promise<ProductEntity> {
+    const params: string = GetProductBySlugRequestMapper.toRequest(slug, branchId);
+
+    const response = await axiosClient.get<GetProductBySlugResponseDTO>(
+      `${API_CONFIG.BASE_URL}/custom-api/v1/product-by-slug/?${params}`,
+      {
+        headers: API_CONFIG.HEADERS,
+      }
+    );
+    
+
+    if (response.status >= 300) {
+      throw ApiErrorMapper.toDomain(response.data, response.status);
+    }
+
+    const data: GetProductBySlugResponseDTO = response.data;
+    return GetProductBySlugResponseMapper.toDomain(data);
+  }
+
+  async getProductVariations(productId: number): Promise<VariationEntity[]> {
+    const response = await axiosClient.get<GetProductByIdResponseDTO[]>(
+      `${API_CONFIG.BASE_URL}/custom-api/v1/products/?product_id=${productId}`,
+      {
+        headers: API_CONFIG.HEADERS,
+      }
+    );
+
+    const data: GetProductByIdResponseDTO[] = response.data;
+    const variations = data[0].variations;
+    
+    return ProductVariationMapper.toDomainList(variations);
   }
 }

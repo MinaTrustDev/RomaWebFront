@@ -3,7 +3,7 @@
 import { getDeliveryConfigurationUseCase } from "@/core/di";
 import { createServerAction } from "zsa";
 
-export const getDeliveryConfiguration = createServerAction().handler(
+export const getDeliveryConfigurationAction = createServerAction().handler(
   async () => {
     const deliveryConfiguration =
       await getDeliveryConfigurationUseCase.execute();

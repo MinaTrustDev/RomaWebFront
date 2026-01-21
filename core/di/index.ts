@@ -4,6 +4,8 @@ import { GetBranchesByOrderTypeUseCase } from "../application/use-cases/GetBranc
 import { GetDeliveryConfigurationUseCase } from "../application/use-cases/GetDeliveryConfiguration.UseCase";
 import { GetNearbyBranchesUseCase } from "../application/use-cases/GetNearbyBranchesUseCase";
 import { GetProductByIdUseCase } from "../application/use-cases/GetProductByIdUseCase";
+import { GetProductBySlugUseCase } from "../application/use-cases/GetProductBySlug.UseCase";
+import { GetProductVariationsUseCase } from "../application/use-cases/GetProductVariations.UseCase";
 import { RemoveDeliveryConfigurationUseCase } from "../application/use-cases/RemoveDeliveryConfiguration.UseCase";
 import { SetDeliveryConfigurationUseCase } from "../application/use-cases/SetDeliveryConfiguration.UseCase";
 import { BranchRepository } from "../infrastructure/repositories/BranchRepository";
@@ -39,4 +41,10 @@ export const addToCartUseCase = new AddToCardUseCase(
 );
 export const getNearbyBranchesUseCase = new GetNearbyBranchesUseCase(
   branchRepository
+);
+export const getProductBySlugUseCase = new GetProductBySlugUseCase(
+  productRepository
+);
+export const getProductVariationsUseCase = new GetProductVariationsUseCase(
+  productRepository
 );

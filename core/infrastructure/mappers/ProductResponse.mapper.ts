@@ -1,11 +1,11 @@
 import { ProductEntity } from "@/core/domain/entities/product.entity";
 import {
   GetProductByIdResponseDTO,
-  VariationDTO,
 } from "../dtos/GetProductByIdResponse.dto";
 import { VariationEntity } from "@/core/domain/entities/variants.entity";
+import { ProductVariationsResponseDTO } from "../dtos/ProductVariationsResponse.dto";
 
-export class GetProductByIdMapper {
+export class ProductResponseMapper {
   static toDomain(product: GetProductByIdResponseDTO): ProductEntity {
     return new ProductEntity({
       id: product.id,
@@ -30,7 +30,7 @@ export class GetProductByIdMapper {
 }
 
 export class ProductVariationMapper {
-  static toDomain(variation: VariationDTO): VariationEntity {
+  static toDomain(variation: ProductVariationsResponseDTO): VariationEntity {
     return new VariationEntity({
       id: variation.id.toString(),
       name: variation.name,
@@ -47,7 +47,7 @@ export class ProductVariationMapper {
     });
   }
 
-  static toDomainList(variations: VariationDTO[]): VariationEntity[] {
+  static toDomainList(variations: ProductVariationsResponseDTO[]): VariationEntity[] {
     return variations.map((variation) => this.toDomain(variation));
   }
 }

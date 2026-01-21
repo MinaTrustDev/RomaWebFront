@@ -17,7 +17,7 @@ export class ProductEntity {
   public readonly price_tax: number;
 
   public readonly image: string;
-  public readonly offer_menu_image: string;
+  public readonly offer_menu_image?: string;
 
   public readonly stock_status: string;
 
@@ -56,7 +56,7 @@ export class ProductEntity {
     price: string;
     price_tax: number;
     image: string;
-    offer_menu_image: string;
+    offer_menu_image?: string;
     stock_status: string;
     points: number;
     variants?: VariationEntity[];
