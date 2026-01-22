@@ -5,7 +5,7 @@ import {
 import { VariationEntity } from "@/core/domain/entities/variants.entity";
 import { ProductVariationsResponseDTO } from "../dtos/ProductVariationsResponse.dto";
 
-export class ProductResponseMapper {
+export class ProductDetailResponseMapper {
   static toDomain(product: GetProductByIdResponseDTO): ProductEntity {
     return new ProductEntity({
       id: product.id,
@@ -44,6 +44,7 @@ export class ProductVariationMapper {
       attributes: variation.attributes,
       attribute_summary: variation.attribute_summary,
       points: variation.points,
+      size: variation.attributes.pa_size,
     });
   }
 

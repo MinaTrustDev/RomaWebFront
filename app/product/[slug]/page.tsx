@@ -7,6 +7,10 @@ import dynamic from "next/dynamic";
 import { getDeliveryConfigurationAction } from "@/core/presentation/actions/get-delivery-configuration.action";
 import { Suspense } from "react";
 import { getProductVariations } from "@/core/presentation/actions/get-product-variations";
+import { getAddonsAction } from "@/core/presentation/actions/get-addons.actions";
+import AddonsSelector from "@/core/presentation/product/components/AddonsSelector";
+import VariationsConfiguration from "@/core/presentation/product/components/VariationsConfiguration";
+import ProductConfiguration from "@/core/presentation/product/components/ProductConfiguration";
 
 // Lazy load product detail components (keep SSR for SEO)
 const ProductBackButton = dynamic(() => import("@/core/presentation/product/components/ProductBackButton").then(mod => ({ default: mod.ProductBackButton })));
@@ -38,65 +42,10 @@ export default async function ProductDetailPage({
   }
 
   const [variations, error] = await getProductVariations({productId: product?.id});
+  
 
   return (
-    <>
-      <ProductStructuredData product={product} />
-      <div className="relative min-h-screen bg-background pb-20">
-        <div className="container mx-auto px-4 py-8 md:py-12 max-w-7xl">
-          <ProductBackButton />
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
-            <div className="lg:col-span-7 flex flex-col gap-10">
-              <ProductImage
-                image={product.image}
-                name={product.name_ar}
-                stockStatus={product.stock_status}
-                points={product.points}
-              />
-             {variations && variations.length > 0 && <div className="space-y-4">
-                  <h3 className="text-2xl font-bold text-foreground px-2">
-                    خيارات المنتج
-                  </h3>
-
-                  <Suspense fallback={<div className="h-[100px] w-full bg-gray-200 rounded-lg animate-pulse" />}>
-                    <VariantSelector variants={variations} />
-                  </Suspense>
-                </div>}
-
-              
-              <div className="md:hidden sticky bottom-0 bg-white p-4 pt-0 w-full border border-primary rounded-t-md">
-                <AddToCart
-                  disabled={product.stock_status !== "instock"}
-                  price={product.price_tax}
-                  points={product.points}
-                  productId={product.id}
-                />
-              </div>
-            </div>
-            <div className="hidden lg:col-span-5 md:flex flex-col space-y-8 md:space-y-10 sticky top-8">
-                <ProductHeader
-                  name={product.name_ar}
-                  description={product.description_ar}
-                />
-
-                <div className="space-y-8 bg-card/30 p-8 rounded-[2rem] border border-primary/5 shadow-2xl shadow-primary/5">
-                  <PriceDisplay
-                    price={product.price_tax}
-                    priceTax={product.price_tax}
-                  />
-
-                  <AddToCart
-                    disabled={product.stock_status !== "instock"}
-                    price={product.price_tax}
-                    points={product.points}
-                    productId={product.id}
-                  />
-                </div>
-              </div>
-          </div>
-        </div>
-      </div>
-    </>
+    <ProductConfiguration variations={variations} product={product} />
   );
 }
 

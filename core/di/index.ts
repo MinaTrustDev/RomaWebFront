@@ -1,4 +1,5 @@
 import { AddToCardUseCase } from "../application/use-cases/AddToCard.UseCase";
+import { GetAddonsUseCase } from "../application/use-cases/GetAddons.UseCase";
 import { GetProductsUseCase } from "../application/use-cases/GetAllProducts.UseCase";
 import { GetBranchesByOrderTypeUseCase } from "../application/use-cases/GetBranchesByOrderType.UseCase";
 import { GetDeliveryConfigurationUseCase } from "../application/use-cases/GetDeliveryConfiguration.UseCase";
@@ -50,5 +51,8 @@ export const getProductVariationsUseCase = new GetProductVariationsUseCase(
   productRepository
 );
 export const getDontMissUseCase = new GetDontMissUseCase(
+  productRepository
+);
+export const getAddonsUseCase = new GetAddonsUseCase(
   productRepository
 );

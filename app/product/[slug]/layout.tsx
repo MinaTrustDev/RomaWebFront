@@ -1,30 +1,28 @@
-import ProductCardById from '@/components/common/ProductCardById';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getDontMissAction } from '@/core/presentation/actions/get-dont-miss.action';
-import React, { Suspense } from 'react'
+import ProductCardById from "@/components/common/ProductCardById";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getDeliveryConfigurationAction } from "@/core/presentation/actions/get-delivery-configuration.action";
+import { getDontMissAction } from "@/core/presentation/actions/get-dont-miss.action";
+import { getProductBySlugAction } from "@/core/presentation/actions/get-product-details.action";
+import { notFound } from "next/navigation";
+import React, { Suspense } from "react";
 
-export default async function Layout({children}: {children: React.ReactNode}) {
-    const [dontMissProducts, dontMissError]  = await getDontMissAction();
+interface LayoutProps {
+  params: Promise<{ slug: string }>;
+  children: React.ReactNode;
+  dontMiss: React.ReactNode;
+}
+
+export default async function Layout({
+  params,
+  children,
+  dontMiss,
+}: LayoutProps) {
+
+
   return (
     <div>
-    {children}
-
-    <Card>
-        <CardHeader>
-            <CardTitle>
-                Don't Miss
-            </CardTitle>
-        </CardHeader>
-        <CardContent >
-            <div className="flex gap-5 justify-around">
-        {dontMissProducts.map((productId: number) => (
-            <Suspense key={productId} fallback={<div>Loading...</div>}>
-                <ProductCardById key={productId} productId={productId} />
-            </Suspense>
-            ))}
-            </div>
-        </CardContent>
-    </Card>
+      {children}
+      {dontMiss}
     </div>
-  )
+  );
 }

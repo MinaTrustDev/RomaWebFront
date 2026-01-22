@@ -17,6 +17,8 @@ export class VariationEntity {
   public readonly attributes: AttributeEntity;
   public readonly attribute_summary: string;
 
+  public readonly size: string;
+
   public readonly points: number;
   constructor({
     id,
@@ -30,6 +32,7 @@ export class VariationEntity {
     stock_status,
     attributes,
     attribute_summary,
+    size,
     points,
   }: {
     id: string;
@@ -51,6 +54,8 @@ export class VariationEntity {
     attribute_summary: string;
 
     points: number;
+
+    size: string;
   }) {
     this.id = id;
     this.name = name;
@@ -64,6 +69,7 @@ export class VariationEntity {
     this.attributes = attributes;
     this.attribute_summary = attribute_summary;
     this.points = points;
+    this.size = size;
   }
 }
 

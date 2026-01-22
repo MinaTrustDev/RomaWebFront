@@ -6,7 +6,7 @@ import { ProductsResponseDTO } from "../dtos/ProductsResponse.dto";
 import { CategoryEntity } from "@/core/domain/entities/category.entity";
 import { CategoriesResponseDTO } from "../dtos/CategoriesResponse.dto";
 import { CategoriesResponseMapper } from "../mappers/CategoriesResponse.mapper";
-import { ProductResponseMapper, ProductVariationMapper } from "../mappers/ProductResponse.mapper";
+import { ProductDetailResponseMapper, ProductVariationMapper } from "../mappers/ProductDetailResponse.mapper";
 import { GetProductByIdResponseDTO } from "../dtos/GetProductByIdResponse.dto";
 import { axiosClient } from "@/lib/axiosClient";
 import { ApiErrorMapper } from "../mappers/ApiErrorMapper";
@@ -15,6 +15,9 @@ import { GetProductBySlugResponseMapper } from "../mappers/GetProductBySlugRespo
 import { GetProductBySlugResponseDTO } from "../dtos/GetProductBySlug.dto";
 import { ProductVariationsResponseDTO } from "../dtos/ProductVariationsResponse.dto";
 import { VariationEntity } from "@/core/domain/entities/variants.entity";
+import { GetAddonsResponseDTO } from "../dtos/GetAddonsResponse.dto";
+import { AddonEntity } from "@/core/domain/entities/Addons.entity";
+import { GetAddonsResponseMapper } from "../mappers/GetAddonsResponse.mapper";
 
 export class ProductRepository implements IProductRepository {
   async getProductById(productId: number): Promise<ProductEntity> {
@@ -27,7 +30,7 @@ export class ProductRepository implements IProductRepository {
     );
 
     const data: GetProductByIdResponseDTO[] = response.data;
-    return ProductResponseMapper.toDomain(data[0]);
+    return ProductDetailResponseMapper.toDomain(data[0]);
   }
 
   async getAllProducts(): Promise<ProductEntity[]> {
@@ -97,5 +100,17 @@ export class ProductRepository implements IProductRepository {
 
     const data: { products: number[] } = response.data;
     return data.products;
+  }
+
+  async getAddons(productId: number): Promise<AddonEntity[]> {
+    const response = await axiosClient.get<GetAddonsResponseDTO>(
+      `${API_CONFIG.BASE_URL}/proaddon/v1/get2?product_id2=${productId}`,
+      {
+        headers: API_CONFIG.HEADERS,
+      }
+    );
+
+    const data: GetAddonsResponseDTO = response.data;
+    return GetAddonsResponseMapper.toDomainList(data.blocks[0].addons);
   }
 }
