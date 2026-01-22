@@ -41,10 +41,10 @@ export default function ProductConfiguration({ variations, product }: { variatio
               />
               <VariationsConfiguration  variations={variations} />
 
-              <div className="md:hidden sticky bottom-0 bg-white p-4 pt-0 w-full border border-primary rounded-t-md">
+              <div className="md:hidden sticky bottom-0 bg-background p-4 pt-0 w-full border border-primary rounded-t-md">
                 <AddToCart
                   disabled={product.stock_status !== "instock"}
-                  price={product.price_tax}
+                  price={totalPrice}
                   points={product.points}
                   productId={product.id}
                 />

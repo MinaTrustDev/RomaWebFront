@@ -25,17 +25,25 @@ export const VariantSelector = ({ variants, selectedVariant, setSelectedVariant 
   };
 
   return (
-    <div className="space-y-6 pt-2 flex gap-4 ">
+    <Card>
+       <CardHeader>
+        <CardTitle>
+          خيارات المنتج
+        </CardTitle>
+       </CardHeader>
+
+      <CardContent className="flex gap-4 flex-wrap">
       {variants.map((variant: VariationEntity) => (
         <VariationItem key={variant.id} variant={variant} selectedVariant={selectedVariant} onSelectVariant={onSelectVariant} />
       ))}
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
 const VariationItem = ({ variant, selectedVariant, onSelectVariant }: { variant: VariationEntity, selectedVariant: VariationEntity | null, onSelectVariant: (variant: VariationEntity) => void }) => {
   return (
-    <Card className={cn("flex-1 h-full items-center text-center", selectedVariant?.id === variant.id && "bg-primary text-white border-primary")} onClick={() => onSelectVariant(variant)}>
+    <Card className={cn("flex-1 flex-wrap h-full items-center text-center", selectedVariant?.id === variant.id && "bg-primary text-white border-primary")} onClick={() => onSelectVariant(variant)}>
       <CardHeader>
         <CardTitle>{variant.size}</CardTitle>
       </CardHeader>

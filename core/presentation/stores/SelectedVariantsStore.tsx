@@ -104,7 +104,8 @@ export const useProductConfigurationStore = createStore<ProductConfigurationStat
   }),
   {
     name: 'product-configuration-store',
-    skipPersist: true, // Don't persist to avoid stale data
+    skipPersist: true,
+    
   }
 );
 

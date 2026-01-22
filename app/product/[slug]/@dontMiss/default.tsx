@@ -13,8 +13,8 @@ export default async function DontMissDefault() {
                 Don't Miss
             </CardTitle>
         </CardHeader>
-        <CardContent >
-            <div className="flex gap-5 justify-around">
+        <CardContent className=''>
+            <div className="flex gap-5 justify-around flex-wrap">
         {dontMissProducts.map((productId: number) => (
             <Suspense key={productId} fallback={<div>Loading...</div>}>
                 <ProductCardById key={productId} productId={productId} />

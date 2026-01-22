@@ -16,10 +16,10 @@ export default function VariationsConfiguration({ variations }: { variations: Va
     const setSelectedVariant = useProductConfigurationStore((state) => state.setSelectedVariant);
 
         useEffect(() => {
-        if (!selectedVariant && variations[0]) {
+        if (variations[0]) {
             setSelectedVariant(variations[0]);
         }
-    }, [selectedVariant, variations, setSelectedVariant]);
+    }, [variations, setSelectedVariant]);
 
 
     return (
@@ -27,6 +27,7 @@ export default function VariationsConfiguration({ variations }: { variations: Va
             <h3 className="text-2xl font-bold text-foreground px-2">
                 خيارات المنتج
             </h3>
+
             <VariantSelector variants={variations} selectedVariant={selectedVariant} setSelectedVariant={(variant) => setSelectedVariant(variant)} />
             
             {selectedVariant && <Suspense fallback={<LoadingState />}>
