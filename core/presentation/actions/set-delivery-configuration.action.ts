@@ -10,6 +10,7 @@ export const setDeliveryConfiguration = createServerAction()
       deliveryConfiguration: z.object({
         order_type: z.enum(["dinein", "pickup", "delivery"]),
         branchId: z.number(),
+        branchName: z.string(),
         address: z.string(),
       }),
     })
@@ -18,6 +19,7 @@ export const setDeliveryConfiguration = createServerAction()
     await setDeliveryConfigurationUseCase.execute({
       order_type: input.deliveryConfiguration.order_type,
       branchId: input.deliveryConfiguration.branchId,
+      branchName: input.deliveryConfiguration.branchName,
       address: input.deliveryConfiguration.address,
     });
   });

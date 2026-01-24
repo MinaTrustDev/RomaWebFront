@@ -4,6 +4,8 @@ import "./globals.css";
 import { SEO_CONSTANTS } from "@/core/domain/constants/seo.constant";
 import { QueryProvider } from "@/lib/providers/query-provider";
 import { NavigationLoading } from "@/components/navigation/navigation-loading";
+import NavBar from "@/components/common/NavBar";
+import { getDeliveryConfigurationAction } from "@/core/presentation/actions/get-delivery-configuration.action";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -73,18 +75,26 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [deliveryConfig, _] = await getDeliveryConfigurationAction();
   return (
     <html lang="ar" dir="rtl">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NavigationLoading />
-        <QueryProvider>{children}</QueryProvider>
+        <div className="min-h-screen">
+          
+        <QueryProvider>
+          <NavBar deliveryConfig={deliveryConfig} />
+          {children}
+          </QueryProvider>
+
+        </div>
       </body>
     </html>
   );

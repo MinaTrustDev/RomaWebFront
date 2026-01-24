@@ -13,6 +13,7 @@ import {  getNearbyBranchesAction } from "../../actions/get-nearby-branches.acti
 import { setDeliveryConfiguration } from "../../actions/set-delivery-configuration.action";
 import { queryClient } from "@/lib/providers/query-provider";
 import { LoadingState } from "@/components/common/loading-state";
+import { BranchTypeEntity } from "@/core/domain/entities/branchType.entity";
 
 // Lazy load heavy components
 const ListBranches = dynamic(() => import("../../components/client/ListBranches").then(mod => ({ default: mod.default })), {
@@ -80,7 +81,7 @@ export const DeliveryMethodTabs = ({
   );
 };
 
-const DineInContent = () => {
+export const DineInContent = () => {
   return (
     <Card>
       <CardContent className="p-2">
@@ -90,7 +91,7 @@ const DineInContent = () => {
   );
 };
 
-const PickupContent = () => {
+export const PickupContent = () => {
   return (
     <Card>
       <CardContent className="p-2">
@@ -100,7 +101,7 @@ const PickupContent = () => {
   );
 };
 
-const DeliveryContent = () => {
+export const DeliveryContent = () => {
   const [location, setLocation] = useState<string>("");
   const router = useRouter();
   const {mutate: setDeliveryConfigAction, isPending: isSettingConfig} = useServerActionMutation(setDeliveryConfiguration, {
@@ -110,13 +111,14 @@ const DeliveryContent = () => {
     },
   })
 const {mutate: findNearbyBranches, isError, error, isPending: isFindingBranches} = useServerActionMutation(getNearbyBranchesAction, {
-  onSuccess: (data) => {
+  onSuccess: (data: BranchTypeEntity) => {
     
     setDeliveryConfigAction({
       deliveryConfiguration: {
         order_type: "delivery",
         branchId: data.id,
         address: location,
+        branchName: data.branch_name,
       },
     })
     router.refresh();

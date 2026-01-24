@@ -32,6 +32,7 @@ export default function BranchListItem({ branchId, order_type, address, image, b
                   order_type: order_type as "dinein" | "pickup" | "delivery",
                   branchId: branchId,
                   address: address,
+                  branchName: branchName,
                 },
               });
             }

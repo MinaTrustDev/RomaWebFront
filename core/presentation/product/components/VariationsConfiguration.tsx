@@ -18,7 +18,7 @@ export default function VariationsConfiguration({ variations }: { variations: Va
         useEffect(() => {
         if (variations[0]) {
             setSelectedVariant(variations[0]);
-        }
+        }   
     }, [variations, setSelectedVariant]);
 
 
