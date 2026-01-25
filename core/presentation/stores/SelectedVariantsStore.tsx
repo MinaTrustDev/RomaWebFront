@@ -33,7 +33,10 @@ export const useProductConfigurationStore = createStore<ProductConfigurationStat
     ...initialState,
     setAddonOptions: (addonId, options) =>
       set((state) => {
-        state.selectedAddons[addonId] = options;
+        state.selectedAddons[addonId] = options.map((option) => new AddonOptionEntity({
+          ...option,
+          addon_id: addonId,
+        }));
       }),
 
     setSelectedVariant: (variant) =>

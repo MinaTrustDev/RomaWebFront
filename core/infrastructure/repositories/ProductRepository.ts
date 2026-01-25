@@ -22,7 +22,7 @@ import { GetAddonsResponseMapper } from "../mappers/GetAddonsResponse.mapper";
 export class ProductRepository implements IProductRepository {
   async getProductById(productId: number): Promise<ProductEntity> {
     const response = await axiosClient.get<GetProductByIdResponseDTO[]>(
-      `${API_CONFIG.BASE_URL}/custom-api/v1/products?product_id=${productId}`,
+      `${API_CONFIG.API_URL}/custom-api/v1/products?product_id=${productId}`,
       {
         headers: API_CONFIG.HEADERS,
         withCredentials: true,
@@ -35,7 +35,7 @@ export class ProductRepository implements IProductRepository {
 
   async getAllProducts(): Promise<ProductEntity[]> {
     const response = await axiosClient.get<ProductsResponseDTO[]>(
-      `${API_CONFIG.BASE_URL}/custom-api/v1/products/`,
+      `${API_CONFIG.API_URL}/custom-api/v1/products/`,
       {
         headers: API_CONFIG.HEADERS,
       }
@@ -47,7 +47,7 @@ export class ProductRepository implements IProductRepository {
 
   async getAllCategories(): Promise<CategoryEntity[]> {
     const response = await axiosClient.get<CategoriesResponseDTO[]>(
-      `${API_CONFIG.BASE_URL}/custom-api/v1/categories/`,
+      `${API_CONFIG.API_URL}/custom-api/v1/categories/`,
       {
         headers: API_CONFIG.HEADERS,
       }
@@ -61,7 +61,7 @@ export class ProductRepository implements IProductRepository {
     const params: string = GetProductBySlugRequestMapper.toRequest(slug, branchId);
 
     const response = await axiosClient.get<GetProductBySlugResponseDTO>(
-      `${API_CONFIG.BASE_URL}/custom-api/v1/product-by-slug/?${params}`,
+      `${API_CONFIG.API_URL}/custom-api/v1/product-by-slug/?${params}`,
       {
         headers: API_CONFIG.HEADERS,
       }
@@ -78,7 +78,7 @@ export class ProductRepository implements IProductRepository {
 
   async getProductVariations(productId: number): Promise<VariationEntity[]> {
     const response = await axiosClient.get<GetProductByIdResponseDTO[]>(
-      `${API_CONFIG.BASE_URL}/custom-api/v1/products/?product_id=${productId}`,
+      `${API_CONFIG.API_URL}/custom-api/v1/products/?product_id=${productId}`,
       {
         headers: API_CONFIG.HEADERS,
       }
@@ -92,7 +92,7 @@ export class ProductRepository implements IProductRepository {
 
   async getDontMessProductsId() : Promise<number[]> {
     const response = await axiosClient.get<{ products: number[] }>(
-      `${API_CONFIG.BASE_URL}/simple-products/v1/get-ids`,
+      `${API_CONFIG.API_URL}/simple-products/v1/get-ids`,
       {
         headers: API_CONFIG.HEADERS,
       }
@@ -104,7 +104,7 @@ export class ProductRepository implements IProductRepository {
 
   async getAddons(productId: number): Promise<AddonEntity[]> {
     const response = await axiosClient.get<GetAddonsResponseDTO>(
-      `${API_CONFIG.BASE_URL}/proaddon/v1/get2?product_id2=${productId}`,
+      `${API_CONFIG.API_URL}/proaddon/v1/get2?product_id2=${productId}`,
       {
         headers: API_CONFIG.HEADERS,
       }

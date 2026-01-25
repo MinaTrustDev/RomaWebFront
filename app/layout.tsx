@@ -7,7 +7,8 @@ import { NavigationLoading } from "@/components/navigation/navigation-loading";
 import NavBar from "@/components/common/NavBar";
 import { getDeliveryConfigurationAction } from "@/core/presentation/actions/get-delivery-configuration.action";
 import { Toaster } from "@/components/ui/sonner";
-
+import { GetGuestId } from "@/components/getGuestId";
+import Cart from "@/core/presentation/components/client/Cart";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -81,23 +82,24 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [deliveryConfig, _] = await getDeliveryConfigurationAction();
+  const [deliveryConfig,] = await getDeliveryConfigurationAction();
 
   return (
     <html lang="ar" dir="rtl">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`relative ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NavigationLoading />
         <div className="min-h-screen">
-          
         <QueryProvider>
+          <Cart />
+        <GetGuestId />
           <NavBar deliveryConfig={deliveryConfig ?? null} />
           {children}
           </QueryProvider>
 
         </div>
-        <Toaster />
+        <Toaster position="top-right" />
       </body>
     </html>
   );

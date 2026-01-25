@@ -8,7 +8,6 @@ export class RemoveDeliveryConfigurationUseCase {
   constructor(private storageRepository: IStorageRepository) {}
 
   async execute(): Promise<void> {
-    console.log("remove delivery configuration");
     await this.storageRepository.delete("delivery_configuration");
     revalidatePath("/", "layout");
     redirect("/");

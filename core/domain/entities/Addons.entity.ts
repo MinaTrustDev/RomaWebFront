@@ -53,6 +53,7 @@ export class MinMaxRulesEntity {
 
 
 export class AddonOptionEntity {
+    public readonly addon_id?: string;
     public readonly selected_by_default: boolean;
     public readonly title: string;
     public readonly price: string;
@@ -67,6 +68,7 @@ export class AddonOptionEntity {
 
 
     constructor({
+        addon_id,
         selected_by_default,
         title,
         price,
@@ -79,6 +81,7 @@ export class AddonOptionEntity {
         label_in_cart,
         label_in_cart_opt,
     }: {
+        addon_id?: string;
         selected_by_default: boolean;
         title: string;
         price: string;
@@ -91,6 +94,7 @@ export class AddonOptionEntity {
         label_in_cart: boolean;
         label_in_cart_opt: string;
     }) {
+        this.addon_id = addon_id;
         this.selected_by_default = selected_by_default;
         this.title = title;
         this.price = price;

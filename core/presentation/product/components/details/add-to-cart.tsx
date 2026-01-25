@@ -12,6 +12,7 @@ interface AddToCartProps {
   price: number;
   points: number;
   productId: number;
+  handleAddToCart: () => void;
 }
 
 export const AddToCart = ({
@@ -19,13 +20,14 @@ export const AddToCart = ({
   price,
   points,
   productId,
+  handleAddToCart,
 }: AddToCartProps) => {
   const { mutate, isPending, isError } = useServerActionMutation(
     addToCartAction,
     undefined
   );
   const onAddToCart = async () => {
-    const result = await mutate({ productId: productId });
+    handleAddToCart();
   };
 
   return (

@@ -24,7 +24,7 @@ export class BranchRepository implements IBranchRepository {
     order_type: string
   ): Promise<BranchTypeEntity[]> {
     const response = await axiosClient.get<BranchByOrderTypeDTO[]>(
-      `${API_CONFIG.BASE_URL}/stora/v1/branch-items?order_type=${order_type}`,
+      `${API_CONFIG.API_URL}/stora/v1/branch-items?order_type=${order_type}`,
       {
         headers: API_CONFIG.HEADERS,
       }
@@ -40,7 +40,7 @@ export class BranchRepository implements IBranchRepository {
   ): Promise<NearbyBranchEntity> {
 
     const response = await axiosClient.post<NearbyBranchResponseDTO>(
-      `${API_CONFIG.BASE_URL}/stora/v1/branches/nearby`,
+      `${API_CONFIG.API_URL}/stora/v1/branches/nearby`,
       { latitude: latitude.toString(), longitude: longitude.toString() },
       {
         headers: API_CONFIG.HEADERS,
@@ -53,7 +53,7 @@ export class BranchRepository implements IBranchRepository {
 
   async getBranchById(branchId: number): Promise<BranchEntity> {
     const response = await axiosClient.get<BranchItemsDTO[]>(
-      `${API_CONFIG.BASE_URL}/stora/v1/branch-items?branch_id=${branchId}`,
+      `${API_CONFIG.API_URL}/stora/v1/branch-items?branch_id=${branchId}`,
       {
         headers: API_CONFIG.HEADERS,
       }
