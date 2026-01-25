@@ -1,3 +1,5 @@
+// "use server";
+
 import { IStorageRepository } from "@/core/application/interfaces/iStorage.interface";
 import { cookies } from "next/headers";
 

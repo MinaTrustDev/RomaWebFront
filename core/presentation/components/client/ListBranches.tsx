@@ -11,10 +11,25 @@ import { useRouter } from "next/navigation";
 import { queryClient } from "@/lib/providers/query-provider";
 import BranchListItem from "./BranchListItem";
 import { BranchListItemSkeleton } from "./BranchListItemSkeleton";
+import { useQuery } from "@tanstack/react-query";
+import { getDeliveryConfigurationAction } from "../../actions/get-delivery-configuration.action";
+
+const getDeliveryConfigutation = () => {
+  return useQuery({
+    queryKey: ["delivery-configuration"],
+    queryFn: async () => {
+      const [deliveryConfig, error] = await getDeliveryConfigurationAction();
+      if (error) {
+        return null;
+      }
+      return deliveryConfig;
+    },
+  })
+}
 
 export default function ListBranches({ order_type }: { order_type: string }) {
   const router = useRouter();
-  
+  const {data: deliveryConfig} = getDeliveryConfigutation();
   const { data, isLoading, error } = useServerActionQuery(getBranchesByType, {
     input: { order_type },
     queryKey: ["branches", order_type],
@@ -42,8 +57,8 @@ export default function ListBranches({ order_type }: { order_type: string }) {
     );
   }
 
-  return (
-    <div className="flex flex-col gap-2">
+  return ( 
+    <div className="flex flex-col gap-2" dir="ltr"> 
       {openBranches.map((branch: BranchTypeEntity) => (
         <BranchListItem 
           key={branch.id} 
@@ -52,6 +67,7 @@ export default function ListBranches({ order_type }: { order_type: string }) {
           address={branch.address} 
           image={branch.image} 
           branchName={branch.branch_name} 
+          deliveryConfig={deliveryConfig ?? null}
         />
       ))}
     </div>

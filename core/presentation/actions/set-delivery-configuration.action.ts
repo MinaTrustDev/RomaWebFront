@@ -1,10 +1,11 @@
 "use server";
 
 import { setDeliveryConfigurationUseCase } from "@/core/di";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createServerAction } from "zsa";
 
-export const setDeliveryConfiguration = createServerAction()
+export const setDeliveryConfigurationAction = createServerAction()
   .input(
     z.object({
       deliveryConfiguration: z.object({
@@ -22,4 +23,5 @@ export const setDeliveryConfiguration = createServerAction()
       branchName: input.deliveryConfiguration.branchName,
       address: input.deliveryConfiguration.address,
     });
+    revalidatePath("/", "layout");
   });

@@ -10,7 +10,7 @@ import { useState } from "react";
 import { Location } from "@/components/common/map-selector";
 import { useServerActionMutation } from "@/core/infrastructure/config/server-action-hooks";
 import {  getNearbyBranchesAction } from "../../actions/get-nearby-branches.action";
-import { setDeliveryConfiguration } from "../../actions/set-delivery-configuration.action";
+import { setDeliveryConfigurationAction } from "../../actions/set-delivery-configuration.action";
 import { queryClient } from "@/lib/providers/query-provider";
 import { LoadingState } from "@/components/common/loading-state";
 import { BranchTypeEntity } from "@/core/domain/entities/branchType.entity";
@@ -104,7 +104,7 @@ export const PickupContent = () => {
 export const DeliveryContent = () => {
   const [location, setLocation] = useState<string>("");
   const router = useRouter();
-  const {mutate: setDeliveryConfigAction, isPending: isSettingConfig} = useServerActionMutation(setDeliveryConfiguration, {
+  const {mutate: setDeliveryConfigAction, isPending: isSettingConfig} = useServerActionMutation(setDeliveryConfigurationAction, {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["delivery-configuration"] });
       router.refresh();

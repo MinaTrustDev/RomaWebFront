@@ -16,18 +16,19 @@ import RomaLogo from '../icons/RomaLogo';
 export default function NavBar({ deliveryConfig }: { deliveryConfig: DeliveryConfiguration | null }) {
     
   return (
-    <div className="relative flex flex-row items-center justify-between gap-2 flex-wrap w-full p-4 bg-primary" dir="ltr">
-        <div className="flex flex-row items-center justify-center gap-4">
-            <Link href="/" className="text-2xl font-bold">
-                <RomaLogo className="text-primary size-25" />
+    <div className="relative flex items-center justify-between gap-2 flex-wrap p-4 bg-primary" dir="ltr">
+        <div className="flex flex-row items-center justify-center flex-wrap gap-4 flex-1">
+            <Link href="/" className="text-2xl font-bold overflow-hidden">
+                <RomaLogo className="text-primary size-25 hover:animate-spin bg-white rounded-full transition-transform" style={{ animationDuration: '2s' }} />
             </Link>
-            <div className="flex gap-2 items-center">
+            <div className="flex  gap-2 items-center justify-center">
                 <DineinDialog deliveryConfig={deliveryConfig} />
                 <PickupDialog deliveryConfig={deliveryConfig} />
                 <DeliveryDialog deliveryConfig={deliveryConfig} />
             </div>
         </div>
-        <div className="flex flex-row items-center justify-center gap-2">
+        {/* <div className="flex flex-row flex-wrap items-center justify-center gap-2 flex-1"> */}
+            <div className="flex flex-row items-center justify-center gap-2 min-w-xs flex-1">
             {deliveryConfig ? <Alert>
                 <MapPin className="size-4" />
                 <AlertTitle>
@@ -46,7 +47,7 @@ export default function NavBar({ deliveryConfig }: { deliveryConfig: DeliveryCon
                 </AlertDescription>
             </Alert>}
         </div>
-        <div className="flex flex-row items-center justify-center gap-2">
+        <div className="flex flex-row items-center justify-center gap-2 flex-1">
                 <Button variant={"outline"} size={"icon"} className="flex flex-row items-center justify-center gap-2">
                     <ShoppingCart className="size-4" />
                 </Button>
@@ -55,6 +56,7 @@ export default function NavBar({ deliveryConfig }: { deliveryConfig: DeliveryCon
                     Login
                 </Button>
         </div>
+        {/* </div> */}
       </div>
   );
 }

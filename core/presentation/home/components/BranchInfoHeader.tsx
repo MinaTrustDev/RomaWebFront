@@ -1,6 +1,5 @@
 import { BranchEntity } from "@/core/domain/entities/branch.entity";
 import React from "react";
-import { BranchHeader } from "./branch-header";
 import { Clock, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -18,7 +17,11 @@ export const BranchInfoHeader = ({
       <div className="w-full max-w-7xl mx-auto px-4 py-8 md:py-12 relative z-10">
         <div className="bg-background/80 backdrop-blur-md rounded-3xl p-6 md:p-8 border border-white/20 shadow-xl shadow-primary/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex-1 space-y-4">
-            <BranchHeader branchName={branchData.branch_name!} />
+            <h1
+      className="text-3xl md:text-4xl font-bold mb-3 bg-linear-to-r from-primary to-primary/70 bg-clip-text text-transparent cursor-pointer hover:opacity-80 transition-opacity"
+    >
+      {branchData.branch_name}
+    </h1>
 
             <div className="flex flex-wrap items-center gap-4 text-sm md:text-base text-muted-foreground font-medium">
               {branchData.address && (
@@ -27,7 +30,7 @@ export const BranchInfoHeader = ({
                   <span>{branchData.address}</span>
                 </div>
               )}
-              {branchData.delivery_time && (
+              {branchData.order_type === "delivery" && branchData.delivery_time && (
                 <div className="flex items-center gap-2 bg-muted/50 px-3 py-1.5 rounded-full">
                   <Clock className="h-4 w-4 text-primary" />
                   <span>وقت التوصيل: {branchData.delivery_time}</span>

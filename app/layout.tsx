@@ -6,6 +6,7 @@ import { QueryProvider } from "@/lib/providers/query-provider";
 import { NavigationLoading } from "@/components/navigation/navigation-loading";
 import NavBar from "@/components/common/NavBar";
 import { getDeliveryConfigurationAction } from "@/core/presentation/actions/get-delivery-configuration.action";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -81,6 +82,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const [deliveryConfig, _] = await getDeliveryConfigurationAction();
+
   return (
     <html lang="ar" dir="rtl">
       <body
@@ -90,11 +92,12 @@ export default async function RootLayout({
         <div className="min-h-screen">
           
         <QueryProvider>
-          <NavBar deliveryConfig={deliveryConfig} />
+          <NavBar deliveryConfig={deliveryConfig ?? null} />
           {children}
           </QueryProvider>
 
         </div>
+        <Toaster />
       </body>
     </html>
   );

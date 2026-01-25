@@ -33,7 +33,8 @@ export default async function ProductDetailPage({
 }) {
   const { slug } = await params;
 
-  const [deliveryConfig, _] = await getDeliveryConfigurationAction();
+  const [deliveryConfig, noDeliveryConfig] = await getDeliveryConfigurationAction();
+
 
   const [product, productNotFound] = await getProductBySlugAction({slug: slug, branchId: deliveryConfig?.branchId});
   

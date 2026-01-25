@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Item, ItemActions, ItemContent, ItemDescription, ItemTitle } from '@/components/ui/item'
 import { Button } from '@/components/ui/button'
 import { Minus, Plus } from 'lucide-react'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { getAddonsAction } from '../../actions/get-addons.actions';
 import { cn } from '@/lib/utils';
 import { Spinner } from '@/components/ui/spinner';
@@ -15,13 +15,15 @@ import { useProductConfigurationStore } from '../../stores/SelectedVariantsStore
 export default function AddonsSelector({ variantId }: { variantId: number }) {
   // const setAvailableAddons = useProductConfigurationStore((state) => state.setAvailableAddons);
 
-  const { data: addons, isLoading } = useSuspenseQuery({
+  const { data: addons, isLoading } = useQuery({
     queryKey: ['addons', variantId],
     queryFn: async () => {
       const [addons, addonsError] = await getAddonsAction({productId: variantId});
       return addons;
     },
   });
+
+  if (isLoading) return <LoadingState />;
 
   if (!addons) return null;
 
@@ -99,4 +101,17 @@ const AddonOptionCard = ({ option, handleSelectOption, selected }: { option: Add
             </ItemActions>
         </Item>
     )
+}
+
+const LoadingState = () => {
+    return <Card>
+        <CardHeader>
+            <CardTitle>
+                جاري تحميل المنتجات
+            </CardTitle>
+        </CardHeader>
+    <CardContent className='flex items-center justify-center'>
+      <Spinner />
+    </CardContent>
+  </Card>;
 }

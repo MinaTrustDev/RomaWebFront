@@ -30,22 +30,10 @@ export default function VariationsConfiguration({ variations }: { variations: Va
 
             <VariantSelector variants={variations} selectedVariant={selectedVariant} setSelectedVariant={(variant) => setSelectedVariant(variant)} />
             
-            {selectedVariant && <Suspense fallback={<LoadingState />}>
+            {selectedVariant &&
                 <AddonsSelector variantId={Number(selectedVariant.id)} />
-            </Suspense>}
+            }
         </div>
     )
 }
 
-const LoadingState = () => {
-    return <Card>
-        <CardHeader>
-            <CardTitle>
-                جاري تحميل المنتجات
-            </CardTitle>
-        </CardHeader>
-    <CardContent className='flex items-center justify-center'>
-      <Spinner />
-    </CardContent>
-  </Card>;
-}

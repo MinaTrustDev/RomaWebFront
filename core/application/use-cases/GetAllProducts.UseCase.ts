@@ -18,6 +18,7 @@ export class GetProductsUseCase {
   async execute(): Promise<BranchEntity> {
     const deliveryConfiguration: DeliveryConfiguration =
       await this.storageRepository.get("delivery_configuration");
+      
     if (!deliveryConfiguration || deliveryConfiguration === null) {
       const categories = await this.productRepository.getAllCategories();
       return new BranchEntity({ categories: categories });
