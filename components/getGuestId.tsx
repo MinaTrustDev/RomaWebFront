@@ -12,6 +12,9 @@ export const GetGuestId = () => {
             const [guestId, _] = await getGuestIdAction();
             return guestId;
         },
+        staleTime: 0, // No caching
+        gcTime: 0, // No cache retention
+        refetchOnMount: true,
     });
     return null;
 }

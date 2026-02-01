@@ -15,8 +15,10 @@ export const useAddToCart = () => {
                 throw error;
             }
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['cart'] });
+        onSuccess: (_, variables) => {
+            // Remove and invalidate all cart queries for this specific guest_id
+            queryClient.removeQueries({ queryKey: ['cart', variables.token] });
+            queryClient.invalidateQueries({ queryKey: ['cart', variables.token] });
             toast.success("تم الاضافه الي السله")
         },
         onError: (error) => {

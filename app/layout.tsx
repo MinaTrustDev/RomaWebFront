@@ -93,7 +93,6 @@ export default async function RootLayout({
         <div className="min-h-screen">
         <QueryProvider>
           <Cart />
-        <GetGuestId />
           <NavBar deliveryConfig={deliveryConfig ?? null} />
           {children}
           </QueryProvider>

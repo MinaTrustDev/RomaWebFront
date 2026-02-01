@@ -27,7 +27,7 @@ export class CartRepository implements ICart {
             method: 'GET',
         headers: {
             ...API_CONFIG.HEADERS,
-            guest_id: "token",
+            guest_id: token,
             "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
                 Pragma: "no-cache",
         },
@@ -35,7 +35,7 @@ export class CartRepository implements ICart {
       });
       const data: GetCartResponseDTO = await response.json();
 
-      console.log("token", response)
+      console.log("token", token)
 
       return GetCartResponseMapper.toDomain(data);
     }

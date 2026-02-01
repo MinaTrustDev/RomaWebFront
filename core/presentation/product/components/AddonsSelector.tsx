@@ -21,6 +21,9 @@ export default function AddonsSelector({ variantId }: { variantId: number }) {
       const [addons, addonsError] = await getAddonsAction({productId: variantId});
       return addons;
     },
+    staleTime: 0, // No caching
+    gcTime: 0, // No cache retention
+    refetchOnMount: true,
   });
 
   if (isLoading) return <LoadingState />;

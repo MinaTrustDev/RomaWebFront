@@ -8,7 +8,10 @@ export const useGetGuestId = () => {
             const [guest_id, error] = await getGuestIdAction();
 
             return guest_id
-        }
+        },
+        staleTime: 0, // No caching
+        gcTime: 0, // No cache retention
+        refetchOnMount: true,
     })
 }
 

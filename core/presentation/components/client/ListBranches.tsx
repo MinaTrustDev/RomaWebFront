@@ -24,6 +24,9 @@ const getDeliveryConfigutation = () => {
       }
       return deliveryConfig;
     },
+    staleTime: 0, // No caching
+    gcTime: 0, // No cache retention
+    refetchOnMount: true,
   })
 }
 

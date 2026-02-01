@@ -36,7 +36,11 @@ const getCartItems = (guest_id?: string) => {
       }
       return cart;
     },
+    staleTime: 0, // No caching
+    gcTime: 0, // No cache retention
     refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
     enabled: !!guest_id,
   })
 }
