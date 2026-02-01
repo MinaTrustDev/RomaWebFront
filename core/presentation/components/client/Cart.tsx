@@ -23,23 +23,31 @@ import { CartItemEntity } from '@/core/domain/entities/CartItem.entity'
 import { ShoppingCart, Plus, Minus, Trash2, Sparkles, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
+import { useGenerateGuestId, useGetGuestId } from '../../hooks/useGenerateGuestId'
+import { useGuestId } from '../../hooks/useGuestId'
 
-const getCartItems = () => {
+const getCartItems = (guest_id?: string) => {
   return useQuery({
-    queryKey: ['cart'],
+    queryKey: ['cart', guest_id],
     queryFn: async () => {
-      const [cart, cartError] = await getCartAction();
+      const [cart, cartError] = await getCartAction({token: guest_id!});
       if (cartError) {
         throw cartError;
       }
       return cart;
     },
     refetchOnWindowFocus: true,
+    enabled: !!guest_id,
   })
 }
 
 export default function Cart() {
-  const { data: cart, isLoading, error } = getCartItems();
+  const { guestId, isLoading: isGuestIdLoading } = useGuestId();
+
+  console.log("guestId local storage", guestId);
+
+
+  const { data: cart, isLoading, error } = getCartItems(guestId ?? undefined);
 
   const formatPrice = (price: string | number | undefined) => {
     if (!price) return '0';

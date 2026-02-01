@@ -14,6 +14,8 @@ export class CartRepository implements ICart {
             headers: {
                 ...API_CONFIG.HEADERS,
                 guest_id: token,
+                "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+                Pragma: "no-cache",
             },
         });
 
@@ -21,13 +23,20 @@ export class CartRepository implements ICart {
         
     }
     async getCart(token: string): Promise<CartEntity> {
-        const response = await axiosClient.get(`${API_CONFIG.API_URL}/guest-cart/v1/get-cart`, {
+        const response = await fetch(`${API_CONFIG.API_URL}/guest-cart/v1/get-cart`, {
+            method: 'GET',
         headers: {
             ...API_CONFIG.HEADERS,
-            guest_id: token,
+            guest_id: "token",
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+                Pragma: "no-cache",
         },
+        cache: 'no-store',
       });
-      const data: GetCartResponseDTO = response.data;
+      const data: GetCartResponseDTO = await response.json();
+
+      console.log("token", response)
+
       return GetCartResponseMapper.toDomain(data);
     }
 }

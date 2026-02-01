@@ -6,8 +6,8 @@ import { CartEntity } from "@/core/domain/entities/Cart.entity";
 export class GetCartUseCase {
     constructor(private cartRepository: ICart, private storageRepository: IStorageRepository) {}
 
-    async execute(): Promise<CartEntity> {
-        const token = await this.storageRepository.get("guest_id");
+    async execute(token: string): Promise<CartEntity> {
+        // const token = await this.storageRepository.get("guest_id");
         if (!token) {
             throw new Error("Guest ID not found");
         }

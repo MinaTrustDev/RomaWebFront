@@ -5,13 +5,8 @@ export class GetGuestIdUseCase {
     constructor(private storageRepository: IStorageRepository, private authRepository: IAuthRepository) {}
 
     async execute(): Promise<string> {
-        const guestId = await this.storageRepository.get("guest_id");
-        console.log("guestId", guestId);
-        if (!guestId) {
-            const newGuestId = await this.authRepository.getGuestId();
-            await this.storageRepository.set("guest_id", newGuestId);
-            return newGuestId;
-        }
-        return guestId;
+        const newGuestId = await this.authRepository.getGuestId();
+        // await this.storageRepository.set("guest_id", newGuestId);
+        return newGuestId;
     }
 }

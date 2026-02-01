@@ -10,17 +10,13 @@ export class AddToCardUseCase {
     private storageRepository: IStorageRepository
   ) {}
 
-  async execute(cartItem: CartItemEntity): Promise<void> {
-    console.log("cartItem", cartItem);
+  async execute(cartItem: CartItemEntity, token: string): Promise<void> {
     const deliveryConfiguration = await this.storageRepository.get(
       "delivery_configuration"
     );
     if (!deliveryConfiguration || deliveryConfiguration === null) {
       throw new MissingDeliveryConfiguration("Missing delivery configuration");
     }
-
-
-    const token = await this.storageRepository.get("guest_id");
 
     await this.cartRepository.addToCart(cartItem, token);
   }

@@ -16,6 +16,8 @@ import { addToCartAction } from '../../actions/add-to-cart.action';
 import { toast } from 'sonner';
 import { useServerActionMutation } from '@/core/infrastructure/config/server-action-hooks';
 import { queryClient } from '@/lib/providers/query-provider';
+import { useAddToCart } from '../../hooks/useAddToCart';
+import { useGuestId } from '../../hooks/useGuestId';
 
 
 export default function ProductConfiguration({ variations, product }: { variations: VariationEntity[], product: ProductEntity }) {
@@ -31,19 +33,8 @@ export default function ProductConfiguration({ variations, product }: { variatio
         return variantPrice + addonPrice;
     });
 
-  const { mutate: addToCart, isPending: isAddingToCart } = useServerActionMutation(
-    addToCartAction,
-    {
-      onSuccess: () => {
-        // Invalidate cart query to refresh the cart
-        queryClient.invalidateQueries({ queryKey: ['cart'] });
-        toast.success('تمت إضافة المنتج إلى السلة بنجاح');
-      },
-      onError: (error) => {
-        toast.error(error.message || 'فشل إضافة المنتج إلى السلة');
-      },
-    }
-  );
+  const { mutate: addToCart, isPending: isAddingToCart, isError: isErrorAddingToCart } = useAddToCart();
+  const { guestId } = useGuestId();
 
   const handleAddToCart = () => {
     const addonsKeys = Object.values(selectedAddons);
@@ -60,7 +51,18 @@ export default function ProductConfiguration({ variations, product }: { variatio
     };
 
     console.log("cartItem", cartItem);
-    addToCart({ cartItem });
+    addToCart({ 
+      cartItems: {
+        productId: Number(selectedVariant?.id) || product.id,
+      quantity: 1,
+      addons: addonsKeys.flat().map((option) => ({
+        addonId: option.addon_id!,
+        name: option.title,
+        price: Number(option.price),
+      })),
+      },
+      token: guestId!,
+     });
   }
   
   return (
@@ -86,6 +88,8 @@ export default function ProductConfiguration({ variations, product }: { variatio
                   points={product.points}
                   productId={product.id}
                   handleAddToCart={handleAddToCart}
+                  isPending={isAddingToCart}
+                  isError={isErrorAddingToCart}
                 />
               </div>
             </div>
@@ -104,6 +108,8 @@ export default function ProductConfiguration({ variations, product }: { variatio
                     points={product.points}
                     productId={product.id}
                     handleAddToCart={handleAddToCart}
+                    isPending={isAddingToCart}
+                    isError={isErrorAddingToCart}
                   />
                 </div>
               </div>
